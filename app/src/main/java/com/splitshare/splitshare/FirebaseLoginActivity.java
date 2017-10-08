@@ -48,6 +48,7 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
@@ -67,7 +68,9 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
 
     private void updateUI(boolean b)
     {
-        startActivity(new Intent(this, Groups.class));
+        if (b) {
+            startActivity(new Intent(this, Groups.class));
+        }
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -112,6 +115,10 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        if (mAuth.getCurrentUser()!=null)
+        {
+            updateUI(true);
+        }
     }
 
     @Override
