@@ -1,10 +1,7 @@
 @title[Introduction]
 # Split<span style="color: #e49436">Share</span>
 
-#### Flexible Task Collaboration for Everyone.*
-<br>
-<br>
-<span style="color: #bbb; font-size: 80%">[ GitHub, GitLab, Bitbucket, GitBucket, Gitea, Gogs ]</span>
+#### Flexible Task Collaboration for Everyone.
 
 ---
 @title[Step 1. Make a Group]
