@@ -10,14 +10,16 @@ import java.util.List;
 public class Task {
     Date date;
     List<String> people;
+    Group group;
     Task()
     {
         date = new Date();
         people.add("$PERSON");
     }
-    Task(Date d, List<String> p)
+    Task(Date d, List<String> p, Group g)
     {
         date = d;
         people = p;
+        group = g;
     }
 }

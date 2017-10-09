@@ -24,6 +24,12 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
     private FirebaseAuth.AuthStateListener mAuthListener;
     private GoogleApiClient mGoogleApiClient;
     private int RC_SIGN_IN = 9000;
+    private static GoogleSignInAccount acct;
+
+    public static GoogleSignInAccount getAcct()
+    {
+        return acct;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +84,7 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
+            acct = result.getSignInAccount();
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
         } else {
