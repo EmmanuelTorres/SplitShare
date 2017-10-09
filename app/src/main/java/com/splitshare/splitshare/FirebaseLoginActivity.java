@@ -70,7 +70,7 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
     private void updateUI(boolean b)
     {
         if (b) {
-            startActivity(new Intent(this, Groups.class));
+            startActivity(new Intent(this, MainActivity.class));
         }
     }
 
