@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -83,6 +84,8 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
+            findViewById(R.id.loginErrorText).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.loginErrorText)).setText(result.getStatus().toString());
         }
     }
 
