@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
 
                 //Group testGroup = new Group(SplitShareApp.getAcct(), true);
-                GoogleSignInAccount a = SplitShareApp.getAcct();
+                GoogleSignInAccount a = SplitShareApp.acct;
                 Group testGroup = new Group(a, false);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("message");
@@ -110,5 +110,19 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SplitShareApp.mAuth.addAuthStateListener(SplitShareApp.mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (SplitShareApp.mAuthListener != null) {
+            SplitShareApp.mAuth.removeAuthStateListener(SplitShareApp.mAuthListener);
+        }
     }
 }
