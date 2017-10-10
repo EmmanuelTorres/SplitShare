@@ -14,30 +14,23 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class FirebaseLoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = FirebaseLoginActivity.class.getSimpleName();
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private GoogleApiClient mGoogleApiClient;
     private int RC_SIGN_IN = 9000;
-    private static GoogleSignInAccount acct;
-
-    public static GoogleSignInAccount getAcct()
-    {
-        return acct;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firebase_login);
-        mAuth = FirebaseAuth.getInstance();
+        SplitShareApp.mAuth = FirebaseAuth.getInstance();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        SplitShareApp.mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -61,7 +54,7 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        SplitShareApp.mGoogleApiClient = new GoogleApiClient.Builder(this)
                 //.enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
@@ -84,8 +77,10 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
-            acct = result.getSignInAccount();
+            SplitShareApp.acct = result.getSignInAccount();
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+            AuthCredential ac = GoogleAuthProvider.getCredential(result.getSignInAccount().getIdToken(), null);
+            SplitShareApp.mAuth.signInWithCredential(ac);
             updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
@@ -107,7 +102,7 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
     }
 
     private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(SplitShareApp.mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -117,24 +112,6 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
             case R.id.sign_in_button:
                 signIn();
                 break;
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-        if (mAuth.getCurrentUser()!=null)
-        {
-            updateUI(true);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 }

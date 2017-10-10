@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,11 +34,14 @@ public class MainActivity extends AppCompatActivity
                 Snackbar.make(view, "Attempting to add default task to database", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                Group testGroup = new Group(FirebaseLoginActivity.getAcct(),true);
+                //Group testGroup = new Group(SplitShareApp.getAcct(), true);
+                GoogleSignInAccount a = SplitShareApp.acct;
+                Group testGroup = new Group(a, false);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("message");
-
                 myRef.setValue("Hello, World!");
+
+                database.getReference("testGroup/users/" + a.getId()).setValue(new SplitShareUser(a.getId(), a.getDisplayName()));
             }
         });
 
@@ -106,5 +110,19 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SplitShareApp.mAuth.addAuthStateListener(SplitShareApp.mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (SplitShareApp.mAuthListener != null) {
+            SplitShareApp.mAuth.removeAuthStateListener(SplitShareApp.mAuthListener);
+        }
     }
 }
