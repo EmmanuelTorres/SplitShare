@@ -17,6 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -41,7 +43,16 @@ public class MainActivity extends AppCompatActivity
                 DatabaseReference myRef = database.getReference("message");
                 myRef.setValue("Hello, World!");
 
-                database.getReference("testGroup/users/" + a.getId()).setValue(new SplitShareUser(a.getId(), a.getDisplayName()));
+                HashMap<String, Object> thing = new HashMap<>();
+                thing.put("Name", a.getDisplayName());
+                thing.put("Email", a.getEmail());
+
+                database.getReference("users/" + a.getId()).setValue(thing);
+
+                thing.clear();
+                thing.put("Title", "Test_Title");
+                database.getReference("groups/1").setValue(thing);
+                database.getReference("groups/1/members").setValue("Member One");
             }
         });
 
