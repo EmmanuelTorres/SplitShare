@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity
                 Snackbar.make(view, "Attempting to add default task to database", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
+                Group testGroup = new Group(FirebaseLoginActivity.getAcct(),true);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("message");
 
