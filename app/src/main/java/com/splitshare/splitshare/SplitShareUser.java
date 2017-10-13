@@ -2,7 +2,6 @@ package com.splitshare.splitshare;
 
 import android.util.Log;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -10,7 +9,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by armando on 10/9/17.
@@ -19,7 +17,8 @@ import java.util.List;
 
 public class SplitShareUser
 {
-    // The reference to the Firebase database
+    // The reference to the Firebase accounts group
+    // -> USERS
     private DatabaseReference accountReference;
 
     // The unique Google account id of the person who signed in
@@ -31,11 +30,7 @@ public class SplitShareUser
 
     // OPTIONAL: Photo URL from GoogleSignInAccount.getPhotoUrl()?
 
-    /*
-     * googleSignInAccount - Used to assign a unique user id using Google's ids
-     * and assign a name to the user
-     * accountReference - Used to interact with the database (input data, retrieve data)
-     */
+    // accountReference is used for interfacing with the database
     public SplitShareUser(DatabaseReference accountReference)
     {
         this.accountReference = accountReference;
@@ -44,10 +39,11 @@ public class SplitShareUser
         this.email = SplitShareApp.acct.getEmail();
     }
 
-    public SplitShareUser(String i, String n)
+    public SplitShareUser(String accountId, String name, String email)
     {
-        accountId = i;
-        name = n;
+        this.accountId = accountId;
+        this.name = name;
+        this.email = email;
     }
 
     public void setAccountReference(DatabaseReference accountReference)
@@ -135,5 +131,59 @@ public class SplitShareUser
          * FROM groups
          * WHERE group_members CONTAINS "Emmanuel"
          */
+
+        /*
+         * SELECT *
+         * FROM groups
+         */
+        DatabaseReference groupReference = SplitShareApp.firebaseDatabase.getReference("groups/");
+        Query query = groupReference.orderByChild("Members");
+        // Iterates through all the keys
+        query.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                if (dataSnapshot.exists())
+                {
+                    Log.d("Account", "The Members child exists");
+
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren())
+                    {
+                        Log.d("Account", "| The current snapshot has " + snapshot.getChildrenCount());
+
+                        for (DataSnapshot children : snapshot.getChildren())
+                        {
+                            Log.d("Account", "|| " + children.getKey() + ": " + children.getValue());
+
+                            if (children.getKey().equals("Members"))
+                            {
+                                for (DataSnapshot members: children.getChildren())
+                                {
+                                    Log.d("Account", "||| " + members.getKey() + ": " + members.getValue());
+
+                                    for (DataSnapshot users : members.getChildren())
+                                    {
+                                        Log.d("Account", "|||| " + users.getKey() + ": " + users.getValue());
+
+                                        if (users.getValue().equals(accountId))
+                                        {
+                                            Log.d("Account", "|||| MATCH FOUND");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Log.d("Account", "The Members child does not exist");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 }
