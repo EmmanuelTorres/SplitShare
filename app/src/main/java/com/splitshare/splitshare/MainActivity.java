@@ -33,26 +33,21 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Attempting to add default task to database", Snackbar.LENGTH_LONG)
+
+                // Establishes a connection to the Firebase Database
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                // Establishes a reference to the user account
+                DatabaseReference accountReference =
+                        firebaseDatabase.getReference("users/" + SplitShareApp.acct.getId());
+
+                // Creates a SplitShareUser object to interact with the database to make
+                // accounts, etc
+                SplitShareUser splitShareUser =
+                        new SplitShareUser(SplitShareApp.acct, accountReference);
+
+                splitShareUser.createAccount();
+                Snackbar.make(view, splitShareUser.createAccount() + "", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
-                //Group testGroup = new Group(SplitShareApp.getAcct(), true);
-                GoogleSignInAccount a = SplitShareApp.acct;
-                Group testGroup = new Group(a, false);
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("message");
-                myRef.setValue("Hello, World!");
-
-                HashMap<String, Object> thing = new HashMap<>();
-                thing.put("Name", a.getDisplayName());
-                thing.put("Email", a.getEmail());
-
-                database.getReference("users/" + a.getId()).setValue(thing);
-
-                thing.clear();
-                thing.put("Title", "Test_Title");
-                database.getReference("groups/1").setValue(thing);
-                database.getReference("groups/1/members").setValue("Member One");
             }
         });
 
