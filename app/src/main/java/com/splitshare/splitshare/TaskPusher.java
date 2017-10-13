@@ -8,8 +8,8 @@ public class TaskPusher {
     /* This class should take a task definition,
      * reformat it, and push it to the database.
      */
-    public static boolean pushTask(TaskDefinition d){
+    public static BoolReturnStatus pushTask(MasterTask d, UserAuthentication a) {
         // push to DB
-        return true;
+        return new BoolReturnStatus();
     }
 }
