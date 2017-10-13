@@ -1,7 +1,5 @@
 package com.splitshare.splitshare;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
 import java.util.ArrayList;
 
 /**
@@ -9,25 +7,25 @@ import java.util.ArrayList;
  */
 
 public class Group {
-    private ArrayList<GoogleSignInAccount> users;
+    private ArrayList<SplitShareUser> users;
     private boolean democracy = true;
 
     public Group() {
-        users = new ArrayList<GoogleSignInAccount>();
+        users = new ArrayList<SplitShareUser>();
     }
 
-    public Group(GoogleSignInAccount g, boolean b)
+    public Group(SplitShareUser g, boolean b)
     {
-        users = new ArrayList<GoogleSignInAccount>();
+        users = new ArrayList<SplitShareUser>();
         democracy = b;
         users.add(g);
     }
 
-    public void addMember(GoogleSignInAccount g)
+    public void addMember(SplitShareUser g)
     {
         users.add(g);
     }
-    public void removeMember(GoogleSignInAccount g )
+    public void removeMember(SplitShareUser g )
     {
         users.remove(g);
     }
