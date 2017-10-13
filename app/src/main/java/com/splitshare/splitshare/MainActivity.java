@@ -38,9 +38,9 @@ public class MainActivity extends AppCompatActivity
 
                 //Group testGroup = new Group(SplitShareApp.getAcct(), true);
                 GoogleSignInAccount a = SplitShareApp.acct;
-                Group testGroup = new Group(a, false);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("message");
+                Group testGroup = new Group(new SplitShareUser(a,myRef), false);
                 myRef.setValue("Hello, World!");
 
                 HashMap<String, Object> thing = new HashMap<>();
