@@ -13,8 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,8 +48,18 @@ public class MainActivity extends AppCompatActivity
                 SplitShareUser splitShareUser = new SplitShareUser(accountReference);
 
                 splitShareUser.createAccount();
-                Snackbar.make(view, splitShareUser.createAccount() + "", Snackbar.LENGTH_LONG)
+
+                Group group = new Group("0", "CSE_120", null);
+                // Creates a group with ourselves as the sole member
+                group.createGroup();
+                // Adds ourselves
+                group.addMember(splitShareUser.getAccountId());
+                group.addMember("69");
+
+                Snackbar.make(view, "Attempting to add default task to database", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                // Finds a member in the above Group
             }
         });
 

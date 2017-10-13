@@ -6,9 +6,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by armando on 10/9/17.
@@ -90,13 +92,14 @@ public class SplitShareUser
         }
 
         // A listener is needed to check if an account already exists
-        accountReference.addListenerForSingleValueEvent(new ValueEventListener()
+        Query query = accountReference.orderByValue();
+        query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 // If the account already exist, log it but don't change anything
-                if (dataSnapshot.hasChild(accountId))
+                if (dataSnapshot.exists())
                 {
                     Log.d("Account", "The account already exists");
                 }
@@ -107,6 +110,7 @@ public class SplitShareUser
 
                     // Entries that will exist inside the new user entry
                     HashMap<String, String> userData = new HashMap<>();
+                    userData.put("UserID", accountId);
                     userData.put("Name", name);
                     userData.put("Email", email);
 
@@ -121,5 +125,15 @@ public class SplitShareUser
 
         // Returns true if the database contains an entry with the accountId
         return true;
+    }
+
+    public void getGroups()
+    {
+        /*
+         * SQL Search
+         * SELECT *
+         * FROM groups
+         * WHERE group_members CONTAINS "Emmanuel"
+         */
     }
 }
