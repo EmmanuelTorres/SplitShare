@@ -13,11 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,21 +26,21 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Establishes a global connection to the
+        SplitShareApp.firebaseDatabase = FirebaseDatabase.getInstance();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // Establishes a connection to the Firebase Database
-                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 // Establishes a reference to the user account
                 DatabaseReference accountReference =
-                        firebaseDatabase.getReference("users/" + SplitShareApp.acct.getId());
+                        SplitShareApp.firebaseDatabase.getReference("users/" + SplitShareApp.acct.getId());
 
                 // Creates a SplitShareUser object to interact with the database to make
                 // accounts, etc
-                SplitShareUser splitShareUser =
-                        new SplitShareUser(SplitShareApp.acct, accountReference);
+                SplitShareUser splitShareUser = new SplitShareUser(accountReference);
 
                 splitShareUser.createAccount();
                 Snackbar.make(view, splitShareUser.createAccount() + "", Snackbar.LENGTH_LONG)
