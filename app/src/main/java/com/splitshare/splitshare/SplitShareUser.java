@@ -3,7 +3,7 @@ package com.splitshare.splitshare;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
 
@@ -18,7 +18,8 @@ public class SplitShareUser
     // This does NOT hold the password
     private GoogleSignInAccount googleSignInAccount;
 
-    private FirebaseDatabase firebaseDatabase;
+    // The reference to the Firebase database
+    private DatabaseReference accountReference;
 
     // The unique Google account id of the person who signed in
     private String accountId;
@@ -32,14 +33,13 @@ public class SplitShareUser
     /*
      * googleSignInAccount - Used to assign a unique user id using Google's ids
      * and assign a name to the user
-     * firebaseDatabase - Used to interact with the database (input data, retrieve data)
-     *
+     * accountReference - Used to interact with the database (input data, retrieve data)
      */
     public SplitShareUser(GoogleSignInAccount googleSignInAccount,
-                          FirebaseDatabase firebaseDatabase)
+                          DatabaseReference accountReference)
     {
         this.googleSignInAccount = googleSignInAccount;
-        this.firebaseDatabase = firebaseDatabase;
+        this.accountReference = accountReference;
         this.accountId = googleSignInAccount.getId();
         this.name = googleSignInAccount.getDisplayName();
         this.email = googleSignInAccount.getEmail();
@@ -56,9 +56,9 @@ public class SplitShareUser
         this.googleSignInAccount = googleSignInAccount;
     }
 
-    public void setFirebaseDatabase(FirebaseDatabase firebaseDatabase)
+    public void setAccountReference(DatabaseReference accountReference)
     {
-        this.firebaseDatabase = firebaseDatabase;
+        this.accountReference = accountReference;
     }
 
     public void setAccountId(String accountId)
@@ -76,9 +76,9 @@ public class SplitShareUser
         return googleSignInAccount;
     }
 
-    public FirebaseDatabase getFirebaseDatabase()
+    public DatabaseReference getAccountReference()
     {
-        return firebaseDatabase;
+        return accountReference;
     }
 
     public String getAccountId()
@@ -94,7 +94,7 @@ public class SplitShareUser
     public boolean createAccount()
     {
         // If the database reference is null, the connection to the server isn't good
-        if (firebaseDatabase == null)
+        if (accountReference == null)
         {
             // Log the mistake for easy debugging
             Log.d("Account", "The database reference was null");
@@ -102,20 +102,18 @@ public class SplitShareUser
             return false;
         }
 
-        if (firebaseDatabase.getReference("users/" + accountId) != null)
-        {
-            Log.d("Account", "The account is already created");
+        // TODO: Check if account exists
 
-            return true;
-        }
-
+        // If the database is not null and the account doesn't exist, we create a new
+        // HashMap to enter data into Firebase
+        // The values we hold are AccountID, Name, and Email
         HashMap<String, String> userData = new HashMap<>();
-        userData.put("AccountID", accountId);
         userData.put("Name", name);
         userData.put("Email", email);
 
-        firebaseDatabase.getReference("users/" + accountId).setValue(userData);
+        accountReference.setValue(userData);
 
+        // Returns true if the database contains an entry with the accountId
         return true;
     }
 }
