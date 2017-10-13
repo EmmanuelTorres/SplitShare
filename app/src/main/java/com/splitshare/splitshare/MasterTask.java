@@ -16,6 +16,8 @@ public class MasterTask
     private Calendar endDate;
     private long groupId;
     private List<User> activeUsers;
+    // TODO: List<double> paymentDistribution;
+    // and paymentAmount is the sum total
     private double paymentAmount;
     private Cycle cycle;
 
