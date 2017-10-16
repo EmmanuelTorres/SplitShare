@@ -22,6 +22,11 @@ public class Cycle {
     // Week represents Monday -> Sunday
     int[] week = new int[7];
 
+    // This int represents the days in between for a DAYRANGE cycle
+    private int range;
+    // This int represents the last activated day for use in finding the next week
+    private int prevDay;
+
     // Default constructor makes a DAILY cycle
     public Cycle()
     {
@@ -36,9 +41,11 @@ public class Cycle {
     public Cycle(final int i)
     {
         type=cycleType.DAYRANGE;
-        for (int count = 0; count<7; count+=i)
+        range = i;
+        for (int count = 0; count<7; count+=range)
         {
             week[count] = 1;
+            prevDay = count;
         }
     }
 
@@ -59,5 +66,24 @@ public class Cycle {
     public int[] getWeek()
     {
         return week;
+    }
+
+    // For use in calculating the next week if the type is DAYRANGE
+    public void nextWeek()
+    {
+        if (type==cycleType.DAYRANGE)
+        {
+            // Reset the week
+            for (int i : week)
+            {
+                week[i] = 0;
+            }
+
+            // Calculate the next week
+            for (int count = prevDay+range-7; count<7; count+=range)
+            {
+                week[count] = 1;
+            }
+        }
     }
 }
