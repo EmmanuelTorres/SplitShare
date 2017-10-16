@@ -6,6 +6,6 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.splitshare.splitshare.MainActivity"
-    tools:showIn="@layout/app_bar_groups">
+    tools:showIn="@layout/app_bar_mainactivity">
 
 </android.support.constraint.ConstraintLayout>
