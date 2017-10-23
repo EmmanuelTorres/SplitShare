@@ -12,9 +12,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import static android.R.attr.button;
+import static com.splitshare.splitshare.R.id.button_finish;
+import static com.splitshare.splitshare.R.id.fab;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                  setContentView(R.layout.new_task_layout);
+                openTaskCreator();
 
 //                // Establishes a reference to the user account
 //                DatabaseReference accountReference =
@@ -70,6 +75,37 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void closeTaskCreator(){
+        setContentView(R.layout.activity_mainactivity);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openTaskCreator();
+            }
+        });
+    }
+
+    private void openTaskCreator(){
+        setContentView(R.layout.new_task_layout);
+
+        Button finishButton = (Button) findViewById(R.id.button_finish);
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeTaskCreator();
+            }
+        });
+
+        Button cancelButton = (Button) findViewById(R.id.button_cancel);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeTaskCreator();
+            }
+        });
     }
 
     @Override
