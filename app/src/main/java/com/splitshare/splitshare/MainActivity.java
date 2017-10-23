@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_groups);
+        setContentView(R.layout.activity_mainactivity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -34,27 +34,29 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                // Establishes a reference to the user account
-                DatabaseReference accountReference =
-                        SplitShareApp.firebaseDatabase.getReference("users/" + SplitShareApp.acct.getId());
+                  setContentView(R.layout.new_task_layout);
 
-                // Creates a SplitShareUser object to interact with the database to make
-                // accounts, etc
-                SplitShareUser splitShareUser = new SplitShareUser(accountReference);
-
-                splitShareUser.createAccount();
-
-                Group group = new Group("0", "CSE_120", null);
-                // Creates a group with ourselves as the sole member
-                group.createGroup();
-                // Adds ourselves
-                group.addMember(splitShareUser.getAccountId());
-                group.addMember("69");
-
-                splitShareUser.getGroups();
-
-                Snackbar.make(view, "Attempting to add default task to database", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                // Establishes a reference to the user account
+//                DatabaseReference accountReference =
+//                        SplitShareApp.firebaseDatabase.getReference("users/" + SplitShareApp.acct.getEmail());
+//
+//                // Creates a SplitShareUser object to interact with the database to make
+//                // accounts, etc
+//                SplitShareUser splitShareUser = new SplitShareUser(accountReference);
+//
+//                splitShareUser.createAccount();
+//
+//                Group group = new Group("3", "TestGroup", null);
+//                // Creates a group with ourselves as the sole member
+//                group.createGroup();
+//                // Adds ourselves
+//                group.addMember(splitShareUser.getAccountId());
+//                group.addMember("6969");
+//
+//                splitShareUser.getGroups();
+//
+//                Snackbar.make(view, "Attempting to add default task to database", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
 
                 // Finds a member in the above Group
             }
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        setContentView(R.layout.activity_mainactivity);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
