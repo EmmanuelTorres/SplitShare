@@ -8,18 +8,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by armando on 10/9/17.
- * Edited by Emmanuel on 13 October 2017
+/*
+ * This class is for holding information about the single person using the app
+ * It provides useful tools for common tasks like setting variables, interacting with
+ * the database, etc
  */
-
 public class SplitShareUser
 {
     // The reference to the Firebase accounts group
     // -> USERS
     private DatabaseReference accountReference;
+
+    // A list of all the groups the SplitShareUser belong to
+    private ArrayList<Integer> groups;
 
     // The unique Google account id of the person who signed in
     private String accountId;
@@ -30,7 +34,7 @@ public class SplitShareUser
 
     // OPTIONAL: Photo URL from GoogleSignInAccount.getPhotoUrl()?
 
-    // accountReference is used for interfacing with the database
+    // Sets the data based on an accountReference
     public SplitShareUser(DatabaseReference accountReference)
     {
         this.accountReference = accountReference;
@@ -39,11 +43,13 @@ public class SplitShareUser
         this.email = SplitShareApp.acct.getEmail();
     }
 
-    public SplitShareUser(String accountId, String name, String email)
+    // Sets the data and initiates an accountReference
+    public SplitShareUser()
     {
-        this.accountId = accountId;
-        this.name = name;
-        this.email = email;
+        this.accountReference = SplitShareApp.firebaseDatabase.getReference("users/");
+        this.accountId = SplitShareApp.acct.getId();
+        this.name = SplitShareApp.acct.getDisplayName();
+        this.email = SplitShareApp.acct.getEmail();
     }
 
     public void setAccountReference(DatabaseReference accountReference)
@@ -76,7 +82,12 @@ public class SplitShareUser
         return name;
     }
 
-    public boolean createAccount()
+    /*
+     * Creates an account for the current user of the app
+     * Included in this account are their unique user id, name, and email, all
+     * come from their Google account
+     */
+    public void createAccount()
     {
         // If the database reference is null, the connection to the server isn't good
         if (accountReference == null)
@@ -84,17 +95,19 @@ public class SplitShareUser
             // Log the mistake for easy debugging
             Log.d("Account", "The database reference was null");
 
-            return false;
+            return;
         }
 
-        // A listener is needed to check if an account already exists
-        Query query = accountReference.orderByValue();
+        // This query returns DataSnapshots of the 'users' table that have our accountId
+        Query query = accountReference.child(accountId);
+
+        // We need a listener if we want to actually check our query
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                // If the account already exist, log it but don't change anything
+                // If the account already exists, log it but don't change anything
                 if (dataSnapshot.exists())
                 {
                     Log.d("Account", "The account already exists");
@@ -111,34 +124,29 @@ public class SplitShareUser
                     userData.put("Email", email);
 
                     // Sets the above entries as the values for the user
-                    accountReference.setValue(userData);
+                    accountReference.child(accountId).setValue(userData);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-
-        // Returns true if the database contains an entry with the accountId
-        return true;
     }
 
-    public void getGroups()
+    public void addGroup(final String groupId, final String groupName)
     {
-        /*
-         * SQL Search
-         * SELECT *
-         * FROM groups
-         * WHERE group_members CONTAINS "Emmanuel"
-         */
+        // If the database reference is null, the connection to the server isn't good
+        if (accountReference == null)
+        {
+            // Log the mistake for easy debugging
+            Log.d("Account", "The database reference was null");
 
-        /*
-         * SELECT *
-         * FROM groups
-         */
-        DatabaseReference groupReference = SplitShareApp.firebaseDatabase.getReference("groups/");
-        Query query = groupReference.orderByChild("Members");
-        // Iterates through all the keys
+            return;
+        }
+
+        // This query returns DataSnapshots of the 'users' table that have our accountId
+        Query query = accountReference.child(accountId);
+
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
@@ -146,44 +154,62 @@ public class SplitShareUser
             {
                 if (dataSnapshot.exists())
                 {
-                    Log.d("Account", "The Members child exists");
+                    DataSnapshot groupToAdd = dataSnapshot.child("Groups").child(groupId);
 
-                    for (DataSnapshot snapshot: dataSnapshot.getChildren())
+                    if (!groupToAdd.exists())
                     {
-                        Log.d("Account", "| The current snapshot has " + snapshot.getChildrenCount());
+                        Log.d("Account", "Adding group " + groupId + " to user " + accountId);
 
-                        for (DataSnapshot children : snapshot.getChildren())
-                        {
-                            Log.d("Account", "|| " + children.getKey() + ": " + children.getValue());
-
-                            if (children.getKey().equals("Members"))
-                            {
-                                for (DataSnapshot members: children.getChildren())
-                                {
-                                    Log.d("Account", "||| " + members.getKey() + ": " + members.getValue());
-
-                                    for (DataSnapshot users : members.getChildren())
-                                    {
-                                        Log.d("Account", "|||| " + users.getKey() + ": " + users.getValue());
-
-                                        if (users.getValue().equals(accountId))
-                                        {
-                                            Log.d("Account", "|||| MATCH FOUND");
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        groupToAdd.getRef().setValue(groupName);
                     }
-                }
-                else
-                {
-                    Log.d("Account", "The Members child does not exist");
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+    }
+
+    public void removeGroup(final String groupId)
+    {
+        // If the database reference is null, the connection to the server isn't good
+        if (accountReference == null)
+        {
+            // Log the mistake for easy debugging
+            Log.d("Account", "The database reference was null");
+
+            return;
+        }
+
+        // This query returns DataSnapshots of the 'users' table that have our accountId
+        Query query = accountReference.child(accountId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                if (dataSnapshot.exists())
+                {
+                    DataSnapshot groupToAdd = dataSnapshot.child("Groups").child(groupId);
+
+                    if (groupToAdd.exists())
+                    {
+                        Log.d("Account", "Removing group " + groupId + " from user " + accountId);
+
+                        groupToAdd.getRef().removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
         });
     }
 }

@@ -17,4 +17,5 @@ public class SplitShareApp extends Application {
     public static FirebaseAuth.AuthStateListener mAuthListener;
     public static FirebaseDatabase firebaseDatabase;
     public static GoogleApiClient mGoogleApiClient;
+    public static SplitShareUser splitShareUser;
 }
