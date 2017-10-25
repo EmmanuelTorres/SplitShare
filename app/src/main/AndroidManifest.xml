@@ -32,6 +32,10 @@
             android:name=".TaskCreationActivity"
             android:label="Create Task">
         </activity>
+        <activity
+            android:name=".DateSelectionActivity"
+            android:label="Select a day">
+        </activity>
     </application>
 
 </manifest>
