@@ -12,9 +12,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -70,6 +76,15 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        List<Task> mainTaskList = new ArrayList<Task>();
+        mainTaskList.add(new Task());
+        mainTaskList.add(new Task());
+        mainTaskList.add(new Task());
+        ListAdapter taskViewList = new TaskAdapter(this, mainTaskList);
+        ListView mainTaskView = (ListView) findViewById(R.id.mainListView);
+        mainTaskView.setAdapter(taskViewList);
     }
 
     @Override
