@@ -1,5 +1,6 @@
 package com.splitshare.splitshare;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -92,46 +93,8 @@ public class MainActivity extends AppCompatActivity
         mainTaskView.setAdapter(taskViewList);
     }
 
-    private void closeTaskCreator(){
-        setContentView(R.layout.activity_mainactivity);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openTaskCreator();
-            }
-        });
-    }
-
-    private void openTaskCreator(){
-        setContentView(R.layout.new_task_layout);
-
-        Button finishButton = (Button) findViewById(R.id.button_finish);
-        finishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeTaskCreator();
-            }
-        });
-
-        Button cancelButton = (Button) findViewById(R.id.button_cancel);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeTaskCreator();
-            }
-        });
-    }
-
-    @Override
-    public void onBackPressed() {
-        setContentView(R.layout.activity_mainactivity);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+    private void openTaskCreator() {
+        startActivity(new Intent(this, TaskCreationActivity.class));
     }
 
     @Override

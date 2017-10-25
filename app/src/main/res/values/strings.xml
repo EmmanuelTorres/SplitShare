@@ -19,4 +19,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string-array name="temp_groups_array">
+        <item>Photography Group</item>
+        <item>Art Gallery Group</item>
+        <item>2120 Jay St. Residents</item>
+    </string-array>
 </resources>
