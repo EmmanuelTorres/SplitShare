@@ -40,8 +40,8 @@
         android:layout_marginBottom="8dp" />
 
     <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="176dp"
+        android:layout_width="364dp"
+        android:layout_height="446dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
@@ -72,33 +72,15 @@
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="0dp" />
 
-            <EditText
-                android:id="@+id/editText2"
+            <DatePicker
+                android:id="@+id/datePicker"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Start date"
-                android:inputType="date"
-                tools:layout_conversion_absoluteHeight="42dp"
-                tools:layout_conversion_absoluteWidth="319dp"
-                tools:layout_conversion_absoluteX="0dp"
-                tools:layout_conversion_absoluteY="85dp"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="85dp" />
+                android:layout_height="wrap_content" />
 
-            <EditText
-                android:id="@+id/editText"
+            <TimePicker
+                android:id="@+id/timePicker"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Time"
-                android:inputType="time"
-                tools:layout_conversion_absoluteHeight="42dp"
-                tools:layout_conversion_absoluteWidth="319dp"
-                tools:layout_conversion_absoluteX="0dp"
-                tools:layout_conversion_absoluteY="42dp"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="42dp" />
+                android:layout_height="wrap_content" />
 
             <CheckBox
                 android:id="@+id/checkBox3"
