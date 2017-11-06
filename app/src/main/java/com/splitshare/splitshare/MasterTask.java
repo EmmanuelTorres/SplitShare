@@ -28,8 +28,8 @@ public class MasterTask
         this.title = title;
         this.description = description;
         this.type = type;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        setStartDate(startDate);
+        setEndDate(endDate);
         this.groupId = groupId;
         this.activeUsers = activeUsers;
         this.paymentAmount = paymentAmount;
@@ -74,6 +74,11 @@ public class MasterTask
     public void setStartDate(Calendar startDate)
     {
         this.startDate = startDate;
+
+        this.startDate.set(Calendar.HOUR_OF_DAY, 0);
+        this.startDate.set(Calendar.MINUTE, 0);
+        this.startDate.set(Calendar.SECOND, 0);
+        this.startDate.set(Calendar.MILLISECOND, 0);
     }
 
     public Calendar getEndDate()
@@ -84,6 +89,11 @@ public class MasterTask
     public void setEndDate(Calendar endDate)
     {
         this.endDate = endDate;
+
+        this.endDate.set(Calendar.HOUR_OF_DAY, 0);
+        this.endDate.set(Calendar.MINUTE, 0);
+        this.endDate.set(Calendar.SECOND, 0);
+        this.endDate.set(Calendar.MILLISECOND, 0);
     }
 
     public long getGroupId()
