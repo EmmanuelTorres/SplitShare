@@ -8,40 +8,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /*
- * This class is for holding information about the single person using the app
- * It provides useful tools for common tasks like setting variables, interacting with
- * the database, etc
+ * This class is responsible for holding the information of the person who is currently
+ * using the SplitShare application
  */
 public class SplitShareUser
 {
-    // The reference to the Firebase accounts group
-    // -> USERS
+    // A reference to the users table of Firebase
+    // Used as a shortcut but not necessary
     private DatabaseReference accountReference;
 
-    // A list of all the groups the SplitShareUser belong to
-    private ArrayList<Integer> groups;
-
-    // The unique Google account id of the person who signed in
+    // These values are all given by the Google sign in account
+    // The unique userId of the user
     private String accountId;
-    // The name from the Google account id
+    // The name of the user
     private String name;
-    // The email belonging to the Google account
+    // The unique email of the user
     private String email;
 
     // OPTIONAL: Photo URL from GoogleSignInAccount.getPhotoUrl()?
-
-    // Sets the data based on an accountReference
-    public SplitShareUser(DatabaseReference accountReference)
-    {
-        this.accountReference = accountReference;
-        this.accountId = SplitShareApp.acct.getId();
-        this.name = SplitShareApp.acct.getDisplayName();
-        this.email = SplitShareApp.acct.getEmail();
-    }
 
     // Sets the data and initiates an accountReference
     public SplitShareUser()
@@ -52,24 +39,9 @@ public class SplitShareUser
         this.email = SplitShareApp.acct.getEmail();
     }
 
-    public void setAccountReference(DatabaseReference accountReference)
-    {
-        this.accountReference = accountReference;
-    }
-
-    public void setAccountId(String accountId)
-    {
-        this.accountId = accountId;
-    }
-
     public void setName(String name)
     {
         this.name = name;
-    }
-
-    public DatabaseReference getAccountReference()
-    {
-        return accountReference;
     }
 
     public String getAccountId()
@@ -82,17 +54,20 @@ public class SplitShareUser
         return name;
     }
 
+    public String getEmail()
+    {
+        return email;
+    }
+
     /*
      * Creates an account for the current user of the app
-     * Included in this account are their unique user id, name, and email, all
-     * come from their Google account
      */
     public void createAccount()
     {
-        // If the database reference is null, the connection to the server isn't good
+        // If the database reference is null
         if (accountReference == null)
         {
-            // Log the mistake for easy debugging
+            // The connection to the server isn't good
             Log.d("Account", "The database reference was null");
 
             return;
@@ -107,17 +82,13 @@ public class SplitShareUser
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                // If the account already exists, log it but don't change anything
-                if (dataSnapshot.exists())
+                // If the account doesn't already exist
+                if (!dataSnapshot.exists())
                 {
-                    Log.d("Account", "The account already exists");
-                }
-                else
-                {
-                    // Create an account since it doesn't exist at this point
                     Log.d("Account", "A new user account is created");
 
-                    // Entries that will exist inside the new user entry
+                    // Create an account with these entries in the form of
+                    // KEY:VALUE
                     HashMap<String, String> userData = new HashMap<>();
                     userData.put("UserID", accountId);
                     userData.put("Name", name);

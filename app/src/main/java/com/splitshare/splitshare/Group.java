@@ -22,32 +22,41 @@ public class Group
     // The name of the group
     private String groupName;
 
+    /*
+     * groupsReference is a shortcut to our groups/ section of the database
+     * groupName is used when creating groups
+     */
     public Group(String groupName)
     {
         this.groupsReference = SplitShareApp.firebaseDatabase.getReference("groups/");
         this.groupName = groupName;
     }
 
+    // Sets the group name to the value given in the parameter
     public void setGroupName(String groupName)
     {
         this.groupName = groupName;
     }
 
+    // Returns the name of the group
     public String getGroupName()
     {
         return groupName;
     }
 
     // Creates a group with only one member (the person who created the group)
+    // TODO: Decide how the UI will handle adding members on creation of a group
     public void createGroup()
     {
-        // If the reference to the groups part of our table is null, we return
+        // If the reference to the groups part of our table is null
         if (groupsReference == null)
         {
+            // We return (exit the void function) because nothing can be done
             Log.d("Group", "The reference to groups is null");
 
             return;
         }
+
         // Queries for the newest group that was added, AKA the group with the largest GroupID
         Query largestGroupId = groupsReference.orderByChild("GroupID").limitToLast(1);
 
@@ -57,17 +66,19 @@ public class Group
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
+                // A variable newGroupId will always be used, regardless of if this is the first
+                // group or not. It just belongs to the group being added and by default it is 0
                 String newGroupId = "0";
 
                 // If there exists a group with a GroupID
                 if (dataSnapshot.exists())
                 {
                     // No matter what, there is only one group that is returned due to our limit
-                    // Gets the Firebase-generated timestamp of our group
-                    DataSnapshot groupTimestamp = dataSnapshot.getChildren().iterator().next();
+                    // Gets the part of that table that we can modify (past the timestamp)
+                    DataSnapshot groupValues = dataSnapshot.getChildren().iterator().next();
 
                     // Gets the group id of our snapshot, aka the largest group id in the table
-                    String groupId = groupTimestamp.child("GroupID").getValue().toString();
+                    String groupId = groupValues.child("GroupID").getValue().toString();
 
                     // Adds 1 to that for our new group
                     newGroupId = Integer.toString(Integer.parseInt(groupId) + 1);
@@ -97,10 +108,7 @@ public class Group
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
@@ -110,7 +118,7 @@ public class Group
     public void addMember(final String groupId, final String userIdToAdd, final String nameToAdd)
     {
         // Queries for an existing group with the given groupId
-        Query existingGroup = groupsReference.orderByKey();
+        Query existingGroup = groupsReference.orderByChild("GroupID").equalTo(groupId);
 
         // An event listener is needed to traverse the snapshot
         existingGroup.addListenerForSingleValueEvent(new ValueEventListener()
@@ -118,44 +126,86 @@ public class Group
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                // Iterates through all the groups in our table
-                for (DataSnapshot currentGroup: dataSnapshot.getChildren())
+                if (dataSnapshot.exists())
                 {
-                    // Finds the one whose GroupID matches with the one we want to change
-                    if (currentGroup.child("GroupID").getValue().toString().equals(groupId))
+                    // Gets the part of that table that we can modify (past the timestamp)
+                    DataSnapshot groupValues = dataSnapshot.getChildren().iterator().next();
+
+                    // A snapshot specifically to the GroupMembers section of the table
+                    // This makes it easier to add a member because we just get the reference
+                    DataSnapshot userToAdd = groupValues.child("GroupMembers").child(userIdToAdd);
+
+                    // If the user we want to add does not exist inside the GroupMembers part of our table
+                    if (!userToAdd.exists())
                     {
-                        DataSnapshot userToAdd = currentGroup.child("GroupMembers").child(userIdToAdd);
+                        Log.d("Group", "Adding user " + userIdToAdd + " to group " + groupId);
 
-                        // If the user we want to add does not exist inside the GroupMembers part of our table
-                        if (!userToAdd.exists())
-                        {
-                            Log.d("Group", "Adding user " + userIdToAdd + " to group " + groupId);
+                        // We add him to the group
+                        userToAdd.getRef().setValue(nameToAdd);
 
-                            // We add him to the group
-                            userToAdd.getRef().setValue(nameToAdd);
-
-                            SplitShareApp.splitShareUser.addGroup(groupId, groupName);
-                        }
-
-                        // Exit the class since there's no point in checking groups after the one we wanted
-                        return;
+                        // We also add the group to his part of the user table
+                        SplitShareApp.splitShareUser.addGroup(groupId, groupName);
                     }
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
-    // TODO: Remove a member from a list with a given group member id
+    // Removes a member from a group
     public void removeMember(final String groupId, final String userIdToRemove)
     {
         // Queries for an existing group with the given groupId
+        Query existingGroup = groupsReference.orderByChild("GroupID").equalTo(groupId);
+
+        // An event listener is needed to traverse the snapshot
+        existingGroup.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                // Gets the part of that table that we can modify (past the timestamp)
+                DataSnapshot groupValues = dataSnapshot.getChildren().iterator().next();
+
+                // A snapshot specifically to the GroupMembers section of the table
+                // This makes it easier to add a member because we just get the reference
+                DataSnapshot userToRemove = groupValues.child("GroupMembers").child(userIdToRemove);
+
+                // If the user we want to remove exists inside the GroupMembers part of our table
+                if (userToRemove.exists())
+                {
+                    Log.d("Group", "Removing user " + userIdToRemove + " from group " + groupId);
+
+                    // We remove him
+                    userToRemove.getRef().removeValue();
+
+                    SplitShareApp.splitShareUser.removeGroup(groupId);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    public String getGroupName(final String groupId)
+    {
+        // The connection to Firebase is bad
+        if (groupsReference == null)
+        {
+            Log.d("Groups-GetGroupName", "The connection to Firebase is null");
+
+            return null;
+        }
+
+        final String[] groupName = new String[1];
+
+        // Queries for an existing group with the given groupId
         Query existingGroup = groupsReference.orderByKey();
+
+//        Query existingGroup = groupsReference.orderByChild("GroupID").equalTo(groupId);
 
         // An event listener is needed to traverse the snapshot
         existingGroup.addListenerForSingleValueEvent(new ValueEventListener()
@@ -169,20 +219,8 @@ public class Group
                     // Finds the one whose GroupID matches with the one we want to change
                     if (currentGroup.child("GroupID").getValue().toString().equals(groupId))
                     {
-                        DataSnapshot userToRemove = currentGroup.child("GroupMembers").child(userIdToRemove);
+                        groupName[0] = currentGroup.child("GroupName").getValue().toString();
 
-                        // If the user we want to remove exists inside the GroupMembers part of our table
-                        if (userToRemove.exists())
-                        {
-                            Log.d("Group", "Removing user " + userIdToRemove + " from group " + groupId);
-
-                            // We remove him
-                            userToRemove.getRef().removeValue();
-
-                            SplitShareApp.splitShareUser.removeGroup(groupId);
-                        }
-
-                        // Exit the class since there's no point in checking groups after the one we wanted
                         return;
                     }
                 }
@@ -194,5 +232,7 @@ public class Group
 
             }
         });
+
+        return (groupName[0] == null) ? null : groupName[0];
     }
 }
