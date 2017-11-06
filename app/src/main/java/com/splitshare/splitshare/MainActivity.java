@@ -1,5 +1,6 @@
 package com.splitshare.splitshare;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -12,9 +13,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.Button;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.R.attr.button;
+import static com.splitshare.splitshare.R.id.button_finish;
+import static com.splitshare.splitshare.R.id.fab;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,7 +46,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                  setContentView(R.layout.new_task_layout);
+                openTaskCreator();
 
 //                // Establishes a reference to the user account
 //                DatabaseReference accountReference =
@@ -70,17 +82,19 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        List<Task> mainTaskList = new ArrayList<Task>();
+        mainTaskList.add(new Task());
+        mainTaskList.add(new Task());
+        mainTaskList.add(new Task());
+        ListAdapter taskViewList = new TaskAdapter(this, mainTaskList);
+        ListView mainTaskView = (ListView) findViewById(R.id.mainListView);
+        mainTaskView.setAdapter(taskViewList);
     }
 
-    @Override
-    public void onBackPressed() {
-        setContentView(R.layout.activity_mainactivity);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+    private void openTaskCreator() {
+        startActivity(new Intent(this, TaskCreationActivity.class));
     }
 
     @Override

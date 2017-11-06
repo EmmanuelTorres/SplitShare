@@ -1,14 +1,19 @@
 package com.splitshare.splitshare;
 
+import java.time.Month;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static java.util.Calendar.DATE;
+import static java.util.Calendar.MONTH;
 
 /**
  * Created by dklug on 10/9/17.
  */
 
 public class Task {
-    Date date;
+    Calendar date;
     String title;
     String category;
     String assignedMember;
@@ -19,13 +24,16 @@ public class Task {
 
     Task()
     {
-        date = new Date(2017, 12, 4);
+        date = Calendar.getInstance();
         title = "take out trash";
         category = "chores";
         assignedMember = "Joel Miyagi";
         costDue = true;
         feeCollectionMember = "Ebenezer Scrooge";
         fee = 4000.00;
+        group = new Group("the_test_group");
+
+        date.set(2017, 6, 4);
     }
 
     /*
@@ -33,7 +41,7 @@ public class Task {
      * d = date, t = title, c = category, am = assigned member, g = group,
      * cd = costDue, fcm = fee collection member, f = fee
      */
-    Task(Date d, String t, String c, String am, Group g, boolean cd, String fcm, double f)
+    Task(Calendar d, String t, String c, String am, Group g, boolean cd, String fcm, double f)
     {
         date = d;
         title = t;
@@ -50,7 +58,7 @@ public class Task {
      * d = date, t = title, c = category, am = assigned member, g = group,
      * cd = costDue, fcm = fee collection member, f = fee
      */
-    Task(Date d, String t, String c, String am, Group g)
+    Task(Calendar d, String t, String c, String am, Group g)
     {
         date = d;
         title = t;
@@ -60,5 +68,11 @@ public class Task {
         costDue = false;
         feeCollectionMember = "";
         fee = 0.0;
+    }
+    String getDate() {
+        String day = String.format("%02d", date.get(Calendar.DATE));
+        String month = String.format("%02d", date.get(Calendar.MONTH));
+        String year = String.format("%4d", date.get(Calendar.YEAR));
+        return month + "/" + day + "/" + year;
     }
 }
