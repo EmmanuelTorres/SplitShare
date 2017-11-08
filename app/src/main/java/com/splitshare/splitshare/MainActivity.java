@@ -31,6 +31,8 @@ import static com.splitshare.splitshare.R.id.fab;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+
+    public static List<Task> mainTaskList = new ArrayList<Task>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +86,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        List<Task> mainTaskList = new ArrayList<Task>();
-        mainTaskList.add(new Task());
-        mainTaskList.add(new Task());
-        mainTaskList.add(new Task());
+
+//        mainTaskList.add(new Task());
+//        mainTaskList.add(new Task());
+//        mainTaskList.add(new Task());
         ListAdapter taskViewList = new TaskAdapter(this, mainTaskList);
         ListView mainTaskView = (ListView) findViewById(R.id.mainListView);
         mainTaskView.setAdapter(taskViewList);
@@ -95,6 +97,11 @@ public class MainActivity extends AppCompatActivity
 
     private void openTaskCreator() {
         startActivity(new Intent(this, TaskCreationActivity.class));
+    }
+
+    public static void addToTaskList(Task inputTask)
+    {
+        mainTaskList.add(inputTask);
     }
 
     @Override
