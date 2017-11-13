@@ -18,21 +18,24 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DateSelectionActivity extends AppCompatActivity {
+    private DatePicker dPick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.date_selection_activity);
 
-        DatePicker dPick = (DatePicker) findViewById(R.id.datePicker);
+        dPick = (DatePicker) findViewById(R.id.datePicker);
 
         //TaskCreationActivity.startDate  = ;
+
 
         Button doneSelectingDate = (Button) findViewById(R.id.date_button_done);
         doneSelectingDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { closeDateSelector(); }
+            public void onClick(View view) { returnNewDate(); }
         });
     }
 
@@ -42,6 +45,15 @@ public class DateSelectionActivity extends AppCompatActivity {
     }
 
     private void closeDateSelector(){
+        finish();
+    }
+
+    private void returnNewDate() {
+        Intent data = new Intent();
+        data.putExtra("DAY", dPick.getDayOfMonth());
+        data.putExtra("MONTH", dPick.getMonth());
+        data.putExtra("YEAR", dPick.getYear());
+        setResult(RESULT_OK, data);
         finish();
     }
 }
