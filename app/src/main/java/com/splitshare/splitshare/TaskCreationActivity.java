@@ -33,11 +33,20 @@ public class TaskCreationActivity extends AppCompatActivity {
                 EditText titleDesc = findViewById(R.id.TitleEntry);
                 String title = titleDesc.getText().toString();
 
+                EditText descriptionDesc = findViewById(R.id.DescEntry);
+                String description = titleDesc.getText().toString();
+
                 Spinner groupSpinner = findViewById(R.id.spinner);
                 Group group = new Group(groupSpinner.getSelectedItem().toString());
 
                 Task newTask = new Task(Calendar.getInstance(),title,"category?",SplitShareApp.acct.getDisplayName(),group);
                 MainActivity.addToTaskList(newTask);
+
+                //MasterTask(String title, String description, int type, Calendar startDate,
+                //Calendar endDate, long groupId, List<User> activeUsers, double paymentAmount,
+                //Cycle cycle)
+                //MasterTask newMasterTask = new MasterTask(title,description,);
+
                 closeTaskCreator();
             }
         });
