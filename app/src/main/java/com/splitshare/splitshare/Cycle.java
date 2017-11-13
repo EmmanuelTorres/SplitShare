@@ -1,5 +1,6 @@
 package com.splitshare.splitshare;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -22,7 +23,7 @@ public class Cycle {
     public cycleType type;
 
     // For use with WEEKLY cycles, relevant days of week.
-    public boolean[] daysOfWeek = new boolean[7];
+    public ArrayList<Boolean> daysOfWeek = new ArrayList<Boolean>();
 
     /**
      * spacing represents number of days between each event for daily events (every n days)
@@ -64,14 +65,14 @@ public class Cycle {
         setSpacing(s);
     }
 
-    // Constructor for a MONTHLY cycle
+    // Constructor for a WEEKLY cycle
     public Cycle(final boolean[] customWeek, final int o, final int s)
     {
-        type = cycleType.MONTHLY;
+        type = cycleType.WEEKLY;
         isNthDay = false;
         for (int i = 0; i < 7; i++)
         {
-            daysOfWeek[i] = customWeek[i];
+            daysOfWeek.add(i, customWeek[i]);
         }
         nthOccurrence = o;
         setSpacing(s);
@@ -98,7 +99,7 @@ public class Cycle {
             if (temp.equals(thisDay))
                 return true;
         } else if (type == cycleType.WEEKLY) {
-            if(daysOfWeek[thisDay.get(Calendar.DAY_OF_WEEK)-1]) {
+            if(daysOfWeek.get(thisDay.get(Calendar.DAY_OF_WEEK)-1)) {
                 // Normalize both days to Sunday
                 Calendar temp2 = thisDay;
                 temp2.add(Calendar.DATE, 1 - temp2.get(Calendar.DAY_OF_WEEK));
