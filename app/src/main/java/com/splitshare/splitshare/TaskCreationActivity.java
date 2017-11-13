@@ -16,13 +16,17 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 public class TaskCreationActivity extends AppCompatActivity {
     public static Calendar startDate = new GregorianCalendar();
     public static Calendar endDate = new GregorianCalendar();
+    static final int SET_START_DATE_REQ = 1;
+    static final int SET_END_DATE_REQ = 2;
+    private boolean startDateIsSet = false;
+    private boolean endDateIsSet = false;
+    private Button finishButton;
     public List<User> activeUsers = null;
     public Cycle cycle = new Cycle();
     @Override
@@ -30,7 +34,8 @@ public class TaskCreationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_task_activity);
 
-        Button finishButton = (Button) findViewById(R.id.button_finish);
+        finishButton = (Button) findViewById(R.id.button_finish);
+
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +48,7 @@ public class TaskCreationActivity extends AppCompatActivity {
                 Spinner groupSpinner = findViewById(R.id.spinner);
                 Group group = new Group(groupSpinner.getSelectedItem().toString());
 
-                Task newTask = new Task(Calendar.getInstance(),title,"category?",SplitShareApp.acct.getDisplayName(),group);
+                Task newTask = new Task(startDate,title,"category?",SplitShareApp.acct.getDisplayName(),group);
                 MainActivity.addToTaskList(newTask);
 
                 //MasterTask(String title, String description, int type, Calendar startDate,
@@ -57,6 +62,7 @@ public class TaskCreationActivity extends AppCompatActivity {
                 closeTaskCreator();
             }
         });
+        finishButton.setClickable(false);
 
         Button cancelButton = (Button) findViewById(R.id.button_cancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -70,14 +76,14 @@ public class TaskCreationActivity extends AppCompatActivity {
         Button beginDateButton = (Button) findViewById(R.id.startDateSetButton);
         beginDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { openDateSelector(); }
+            public void onClick(View view) { openDateSelector(SET_START_DATE_REQ); }
         });
 
 
         Button endDateButton = (Button) findViewById(R.id.endDateSetButton);
         endDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { openDateSelector(); }
+            public void onClick(View view) { openDateSelector(SET_END_DATE_REQ); }
         });
     }
 
@@ -89,5 +95,29 @@ public class TaskCreationActivity extends AppCompatActivity {
     private void closeTaskCreator(){
         finish();
     }
-    private void openDateSelector() { startActivity(new Intent(this, DateSelectionActivity.class)); }
+    private void openDateSelector(int request) { startActivityForResult(new Intent(this, DateSelectionActivity.class), request); }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (resultCode == RESULT_OK) {
+
+            if (requestCode == SET_START_DATE_REQ) {
+                startDate = Calendar.getInstance();
+                startDate.set(Calendar.YEAR, data.getIntExtra("YEAR", 1999));
+                startDate.set(Calendar.MONTH, data.getIntExtra("MONTH", 4));
+                startDate.set(Calendar.DAY_OF_MONTH, data.getIntExtra("DAY", 21));
+                startDateIsSet = true;
+            } else if (requestCode == SET_END_DATE_REQ) {
+                endDate = Calendar.getInstance();
+                endDate.set(Calendar.YEAR, data.getIntExtra("YEAR", 1999));
+                endDate.set(Calendar.MONTH, data.getIntExtra("MONTH", 4));
+                endDate.set(Calendar.DAY_OF_MONTH, data.getIntExtra("DAY", 21));
+                endDateIsSet = true;
+            }
+            if (startDateIsSet && endDateIsSet) {
+                finishButton.setClickable(true);
+            }
+        }
+    }
 }
