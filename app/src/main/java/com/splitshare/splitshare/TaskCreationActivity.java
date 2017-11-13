@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +27,7 @@ public class TaskCreationActivity extends AppCompatActivity {
     static final int SET_END_DATE_REQ = 2;
     private boolean startDateIsSet = false;
     private boolean endDateIsSet = false;
+    private boolean isTaskReady = false;
     private Button finishButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,10 @@ public class TaskCreationActivity extends AppCompatActivity {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isTaskReady) {
+                    outputStatus();
+                    return;
+                }
                 EditText titleDesc = findViewById(R.id.TitleEntry);
                 String title = titleDesc.getText().toString();
 
@@ -57,7 +63,6 @@ public class TaskCreationActivity extends AppCompatActivity {
                 closeTaskCreator();
             }
         });
-        finishButton.setClickable(false);
 
         Button cancelButton = (Button) findViewById(R.id.button_cancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +116,15 @@ public class TaskCreationActivity extends AppCompatActivity {
                 endDateIsSet = true;
             }
             if (startDateIsSet && endDateIsSet) {
-                finishButton.setClickable(true);
+                isTaskReady = true;
             }
         }
+    }
+
+    void outputStatus() {
+        if (!startDateIsSet)
+            Toast.makeText(this, "No start date set", Toast.LENGTH_LONG).show();
+        else if (!endDateIsSet)
+            Toast.makeText(this, "No end date set", Toast.LENGTH_LONG).show();
     }
 }
