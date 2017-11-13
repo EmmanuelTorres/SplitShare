@@ -1,5 +1,7 @@
 package com.splitshare.splitshare;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -34,6 +36,12 @@ public class MasterTask
         this.activeUsers = activeUsers;
         this.paymentAmount = paymentAmount;
         this.cycle = cycle;
+    }
+
+    public void addToDatabase(String id)
+    {
+        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("tasks/");
+        taskReference.child(id).setValue(this);
     }
 
     public String getTitle()
