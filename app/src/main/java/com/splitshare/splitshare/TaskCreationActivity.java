@@ -17,10 +17,14 @@ import android.widget.Spinner;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class TaskCreationActivity extends AppCompatActivity {
-    public static Calendar startDate;
-    public static Calendar endDate;
+    public static Calendar startDate = new GregorianCalendar();
+    public static Calendar endDate = new GregorianCalendar();
+    public List<User> activeUsers = null;
+    public Cycle cycle = new Cycle();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +49,10 @@ public class TaskCreationActivity extends AppCompatActivity {
                 //MasterTask(String title, String description, int type, Calendar startDate,
                 //Calendar endDate, long groupId, List<User> activeUsers, double paymentAmount,
                 //Cycle cycle)
-                //MasterTask newMasterTask = new MasterTask(title,description,);
+                MasterTask newMasterTask = new MasterTask(title,description,0,startDate,endDate,1,activeUsers,123,cycle);
+                String mTaskID = title+(int)(Math.random()*100);
+                System.out.println(mTaskID);
+                newMasterTask.addToDatabase(mTaskID);
 
                 closeTaskCreator();
             }
