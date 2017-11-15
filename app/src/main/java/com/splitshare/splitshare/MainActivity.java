@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,20 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Button;
 
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.attr.button;
-import static com.splitshare.splitshare.R.id.button_finish;
-import static com.splitshare.splitshare.R.id.fab;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,32 +39,9 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                openTaskCreator();
-
-//                // Establishes a reference to the user account
-//                DatabaseReference accountReference =
-//                        SplitShareApp.firebaseDatabase.getReference("users/" + SplitShareApp.acct.getEmail());
-//
-//                // Creates a SplitShareUser object to interact with the database to make
-//                // accounts, etc
-//                SplitShareUser splitShareUser = new SplitShareUser(accountReference);
-//
-//                splitShareUser.createAccount();
-//
-//                Group group = new Group("3", "TestGroup", null);
-//                // Creates a group with ourselves as the sole member
-//                group.createGroup();
-//                // Adds ourselves
-//                group.addMember(splitShareUser.getAccountId());
-//                group.addMember("6969");
-//
-//                splitShareUser.getGroups();
-//
-//                Snackbar.make(view, "Attempting to add default task to database", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-
-                // Finds a member in the above Group
+                Group smartGroup = new Group("-Kyr49hkM6fxJB8lZBdR", "0", "Test");
+//                smartGroup.removeMember("106515564144896533916");
+                smartGroup.getUsers();
             }
         });
 

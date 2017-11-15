@@ -106,7 +106,7 @@ public class Group
                 groupsReference.child(key).child("GroupMembers").setValue(groupEntries);
 
                 // Add this group to the user's id
-                SplitShareApp.splitShareUser.addGroupToUser(key, newGroupId);
+                SplitShareApp.splitShareUser.addToGroup(key, newGroupId);
             }
 
             @Override
