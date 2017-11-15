@@ -45,7 +45,6 @@ public class Group
     }
 
     // Creates a group with only one member (the person who created the group)
-    // TODO: Decide how the UI will handle adding members on creation of a group
     public void createGroup()
     {
         // If the reference to the groups part of our table is null
@@ -104,7 +103,7 @@ public class Group
                 groupsReference.child(key).child("GroupMembers").setValue(groupEntries);
 
                 // Add this group to the user's id
-                SplitShareApp.splitShareUser.addGroup(newGroupId, groupName);
+                SplitShareApp.splitShareUser.addGroupToUser(newGroupId, newGroupId);
             }
 
             @Override
@@ -144,7 +143,7 @@ public class Group
                         userToAdd.getRef().setValue(nameToAdd);
 
                         // We also add the group to his part of the user table
-                        SplitShareApp.splitShareUser.addGroup(groupId, groupName);
+                        SplitShareApp.splitShareUser.addGroupToUser(groupValues.getKey(), groupId);
                     }
                 }
             }
@@ -169,6 +168,17 @@ public class Group
                 // Gets the part of that table that we can modify (past the timestamp)
                 DataSnapshot groupValues = dataSnapshot.getChildren().iterator().next();
 
+                // If there is only one member
+                if (groupValues.child("GroupMembers").getChildrenCount() == 1)
+                {
+                    // We delete the group
+                    groupValues.getRef().removeValue();
+
+                    // TODO: A function belonging to MasterTask that removes it
+
+                    return;
+                }
+
                 // A snapshot specifically to the GroupMembers section of the table
                 // This makes it easier to add a member because we just get the reference
                 DataSnapshot userToRemove = groupValues.child("GroupMembers").child(userIdToRemove);
@@ -181,6 +191,7 @@ public class Group
                     // We remove him
                     userToRemove.getRef().removeValue();
 
+                    // We remove the group from his user
                     SplitShareApp.splitShareUser.removeGroup(groupId);
                 }
             }
@@ -190,8 +201,14 @@ public class Group
         });
     }
 
-    public String getGroupName(final String groupId)
+    /*
+     * Gets the group name
+     * The function is static because we might want to access it from outer classes
+     */
+    public static String getGroupName(final String groupId)
     {
+        DatabaseReference groupsReference = SplitShareApp.firebaseDatabase.getReference("groups/");
+
         // The connection to Firebase is bad
         if (groupsReference == null)
         {
@@ -200,12 +217,12 @@ public class Group
             return null;
         }
 
+        // Anonymous inner classes won't allow the changing of a variable that needs to be
+        // final, but we can work around this by allocating space for a String and modifying that
         final String[] groupName = new String[1];
 
         // Queries for an existing group with the given groupId
-        Query existingGroup = groupsReference.orderByKey();
-
-//        Query existingGroup = groupsReference.orderByChild("GroupID").equalTo(groupId);
+        Query existingGroup = groupsReference.orderByChild("GroupID").equalTo(groupId);
 
         // An event listener is needed to traverse the snapshot
         existingGroup.addListenerForSingleValueEvent(new ValueEventListener()
@@ -213,16 +230,10 @@ public class Group
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                // Iterates through all the groups in our table
-                for (DataSnapshot currentGroup: dataSnapshot.getChildren())
+                // If there exists a group with a given group id
+                if (dataSnapshot.exists())
                 {
-                    // Finds the one whose GroupID matches with the one we want to change
-                    if (currentGroup.child("GroupID").getValue().toString().equals(groupId))
-                    {
-                        groupName[0] = currentGroup.child("GroupName").getValue().toString();
-
-                        return;
-                    }
+                    groupName[0] = dataSnapshot.child("GroupName").getValue().toString();
                 }
             }
 
