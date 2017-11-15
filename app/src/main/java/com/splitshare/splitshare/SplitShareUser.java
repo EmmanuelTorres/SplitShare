@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /*
@@ -20,13 +21,12 @@ public class SplitShareUser
     // Used as a shortcut but not necessary
     private DatabaseReference accountReference;
 
-    // These values are all given by the Google sign in account
     // The unique userId of the user
-    private String accountId;
-    // The name of the user
-    private String name;
-    // The unique email of the user
-    private String email;
+    private String userId;
+    // The userName of the user
+    private String userName;
+    // The unique userEmail of the user
+    private String userEmail;
 
     // OPTIONAL: Photo URL from GoogleSignInAccount.getPhotoUrl()?
 
@@ -34,33 +34,15 @@ public class SplitShareUser
     public SplitShareUser()
     {
         this.accountReference = SplitShareApp.firebaseDatabase.getReference("users/");
-        this.accountId = SplitShareApp.acct.getId();
-        this.name = SplitShareApp.acct.getDisplayName();
-        this.email = SplitShareApp.acct.getEmail();
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public String getAccountId()
-    {
-        return accountId;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public String getEmail()
-    {
-        return email;
+        this.userId = SplitShareApp.acct.getId();
+        this.userName = SplitShareApp.acct.getDisplayName();
+        this.userEmail = SplitShareApp.acct.getEmail();
     }
 
     /*
-     * Creates an account for the current user of the app
+     * Creates an account for the person who is using the Android application
+     * Function is not static because we should not be able to create accounts without Firebase
+     * authentication.
      */
     public void createAccount()
     {
@@ -73,8 +55,8 @@ public class SplitShareUser
             return;
         }
 
-        // This query returns DataSnapshots of the 'users' table that have our accountId
-        Query query = accountReference.child(accountId);
+        // Returns a query checking to see if the person exists within the database
+        Query query = accountReference.child(userId);
 
         // We need a listener if we want to actually check our query
         query.addListenerForSingleValueEvent(new ValueEventListener()
@@ -90,12 +72,12 @@ public class SplitShareUser
                     // Create an account with these entries in the form of
                     // KEY:VALUE
                     HashMap<String, String> userData = new HashMap<>();
-                    userData.put("UserID", accountId);
-                    userData.put("Name", name);
-                    userData.put("Email", email);
+                    userData.put("UserID", userId);
+                    userData.put("Name", userName);
+                    userData.put("Email", userEmail);
 
                     // Sets the above entries as the values for the user
-                    accountReference.child(accountId).setValue(userData);
+                    accountReference.child(userId).setValue(userData);
                 }
             }
 
@@ -104,7 +86,10 @@ public class SplitShareUser
         });
     }
 
-    public void addGroup(final String groupId, final String groupName)
+    /*
+     * Adds a group to the users table for the User
+     */
+    public void addGroupToUser(final String groupTimestamp, final String groupId)
     {
         // If the database reference is null, the connection to the server isn't good
         if (accountReference == null)
@@ -115,32 +100,33 @@ public class SplitShareUser
             return;
         }
 
-        // This query returns DataSnapshots of the 'users' table that have our accountId
-        Query query = accountReference.child(accountId);
+        // A query that looks for the person who is being added to a group
+        Query query = accountReference.child(userId);
 
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
+                // If there exists a person with that user id
                 if (dataSnapshot.exists())
                 {
-                    DataSnapshot groupToAdd = dataSnapshot.child("Groups").child(groupId);
+                    // Get the users/userId/groups/groupId table
+                    DataSnapshot groupToAdd = dataSnapshot.child("Groups").child(groupTimestamp);
 
+                    // If the person doesn't already have this group in their Groups table
                     if (!groupToAdd.exists())
                     {
-                        Log.d("Account", "Adding group " + groupId + " to user " + accountId);
+                        // Add them
+                        Log.d("Account", "Adding group " + groupId + " to " + userName);
 
-                        groupToAdd.getRef().setValue(groupName);
+                        groupToAdd.getRef().setValue(groupId);
                     }
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
@@ -156,7 +142,7 @@ public class SplitShareUser
         }
 
         // This query returns DataSnapshots of the 'users' table that have our accountId
-        Query query = accountReference.child(accountId);
+        Query query = accountReference.child(userId);
 
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
@@ -169,7 +155,7 @@ public class SplitShareUser
 
                     if (groupToAdd.exists())
                     {
-                        Log.d("Account", "Removing group " + groupId + " from user " + accountId);
+                        Log.d("Account", "Removing group " + groupId + " from user " + userId);
 
                         groupToAdd.getRef().removeValue();
                     }
@@ -177,10 +163,12 @@ public class SplitShareUser
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
+    }
+
+    public ArrayList<Group> getGroups()
+    {
+        return null;
     }
 }
