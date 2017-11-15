@@ -1,5 +1,8 @@
 package com.splitshare.splitshare;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 /**
  * Created by emmanuel on 10/9/17.
  * Initial implementation by dklug on 10/16/17.
@@ -8,82 +11,137 @@ package com.splitshare.splitshare;
 public class Cycle {
     enum cycleType
     {
-        WEEKLY, DAILY, CUSTOM, DAYRANGE
+        ONE_TIME, DAILY, WEEKLY, MONTHLY, YEARLY
     }
 
     enum Day
     {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+        SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
     }
 
     // A Cycle's cycleType reflects it's behaviour
-    cycleType type;
+    public cycleType type;
 
-    // Week represents Monday -> Sunday
-    int[] week = new int[7];
+    // For use with WEEKLY cycles, relevant days of week.
+    public ArrayList<Boolean> daysOfWeek = new ArrayList<Boolean>();
 
-    // This int represents the days in between for a DAYRANGE cycle
-    private int range;
-    // This int represents the last activated day for use in finding the next week
-    private int prevDay;
+    /**
+     * spacing represents number of days between each event for daily events (every n days)
+     * or number of weeks between weekly events (monday and tuesday every n weeks). Finally,
+     * represents spacing in months for monthly events.
+     *
+     * Spacing 1 means every, spacing 0 is undefined! spacing 2 means every other.
+     */
+    public int spacing;
 
-    // Default constructor makes a DAILY cycle
+    /**
+     * If true, is nth day of month for MONTHLY events, marked by dayOfMonth.
+     * If false, is nthOccurrence of first true daysOfWeek day (e.g., 2nd wednesday)
+     */
+    private boolean isNthDay;
+
+    private int dayOfMonth;
+    private int nthOccurrence;
+
+    // Default constructor makes a ONE_TIME cycle
     public Cycle()
     {
+        type = cycleType.ONE_TIME;
+    }
+
+    // Constructor for a DAILY cycle
+    public Cycle(final int s)
+    {
         type = cycleType.DAILY;
-        for (int i : week)
-        {
-            week[i] = 1;
-        }
+        setSpacing(s);
     }
 
-    // Constructor for a DAYRANGE cycle
-    public Cycle(final int i)
+    // Constructor for a MONTHLY cycle every nth day
+    public Cycle(final int d, final int s)
     {
-        type=cycleType.DAYRANGE;
-        range = i;
-        for (int count = 0; count<7; count+=range)
-        {
-            week[count] = 1;
-            prevDay = count;
-        }
-    }
-
-    // Constructor for a CUSTOM cycle
-    public Cycle(final int[] customWeek)
-    {
-        type = cycleType.CUSTOM;
-        week = customWeek;
+        type = cycleType.MONTHLY;
+        isNthDay = true;
+        dayOfMonth = d;
+        setSpacing(s);
     }
 
     // Constructor for a WEEKLY cycle
-    public Cycle(Day d)
+    public Cycle(final boolean[] customWeek, final int o, final int s)
     {
         type = cycleType.WEEKLY;
-        week[d.ordinal()] = 1;
-    }
-
-    public int[] getWeek()
-    {
-        return week;
-    }
-
-    // For use in calculating the next week if the type is DAYRANGE
-    public void nextWeek()
-    {
-        if (type==cycleType.DAYRANGE)
+        isNthDay = false;
+        for (int i = 0; i < 7; i++)
         {
-            // Reset the week
-            for (int i : week)
-            {
-                week[i] = 0;
-            }
-
-            // Calculate the next week
-            for (int count = prevDay+range-7; count<7; count+=range)
-            {
-                week[count] = 1;
-            }
+            daysOfWeek.add(i, customWeek[i]);
         }
+        nthOccurrence = o;
+        setSpacing(s);
+    }
+
+    // TODO: constructor for yearly events
+
+    // TODO: test this!!
+    public boolean isOnDayWithStart(Calendar start, Calendar thisDay) {
+        Calendar temp = start;
+        // always false if this event is before the day we're checking
+        if (thisDay.before(start))
+            return false;
+        // else check based on type
+        if (type == cycleType.ONE_TIME) {
+            if (start.equals(thisDay))
+                return true;
+        } else if (type == cycleType.DAILY) {
+            // add spacing until we equal or overshoot
+            while (temp.before(thisDay))
+                temp.add(Calendar.DATE, spacing);
+
+            // if equal, it's on thisDay.
+            if (temp.equals(thisDay))
+                return true;
+        } else if (type == cycleType.WEEKLY) {
+            if(daysOfWeek.get(thisDay.get(Calendar.DAY_OF_WEEK)-1)) {
+                // Normalize both days to Sunday
+                Calendar temp2 = thisDay;
+                temp2.add(Calendar.DATE, 1 - temp2.get(Calendar.DAY_OF_WEEK));
+                temp.add(Calendar.DATE, 1 - temp.get(Calendar.DAY_OF_WEEK));
+
+                // count number of weeks between the normalized weeks
+                long numWeeks = (temp2.getTimeInMillis() - temp.getTimeInMillis())/(7*(1000*60*60*24));
+
+                // if same week, or "spacing" weeks later, return true
+                if (numWeeks % spacing == 0)
+                    return true;
+            }
+        } else if (type == cycleType.MONTHLY) {
+            if (isNthDay) {
+                if (thisDay.get(Calendar.DAY_OF_MONTH) == dayOfMonth) {
+                    int numMonths1 = start.get(Calendar.MONTH)+12*start.get(Calendar.YEAR);
+                    int numMonths2 = thisDay.get(Calendar.MONTH)+12*thisDay.get(Calendar.YEAR);
+                    int diff = numMonths2-numMonths1;
+                    if (diff % spacing == 0) return true;
+                }
+            } else {
+                if (start.get(Calendar.WEEK_OF_MONTH) == thisDay.get(Calendar.WEEK_OF_MONTH) &&
+                        start.get(Calendar.DAY_OF_WEEK) == thisDay.get(Calendar.DAY_OF_WEEK)) {
+
+                    int numMonths1 = start.get(Calendar.MONTH)+12*start.get(Calendar.YEAR);
+                    int numMonths2 = thisDay.get(Calendar.MONTH)+12*thisDay.get(Calendar.YEAR);
+                    int diff = numMonths2-numMonths1;
+                    if (diff % spacing == 0) return true;
+                }
+            }
+        } else if (type == cycleType.YEARLY) {
+            if (start.get(Calendar.DAY_OF_YEAR) == thisDay.get(Calendar.DAY_OF_YEAR))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void setSpacing(int n) {
+        if (n > 0)
+            spacing = n;
+        else
+            spacing = 1;
     }
 }

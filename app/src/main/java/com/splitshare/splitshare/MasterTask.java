@@ -1,5 +1,7 @@
 package com.splitshare.splitshare;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -28,12 +30,18 @@ public class MasterTask
         this.title = title;
         this.description = description;
         this.type = type;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        setStartDate(startDate);
+        setEndDate(endDate);
         this.groupId = groupId;
         this.activeUsers = activeUsers;
         this.paymentAmount = paymentAmount;
         this.cycle = cycle;
+    }
+
+    public void addToDatabase(String id)
+    {
+        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("tasks/");
+        taskReference.child(id).setValue(this);
     }
 
     public String getTitle()
@@ -74,6 +82,11 @@ public class MasterTask
     public void setStartDate(Calendar startDate)
     {
         this.startDate = startDate;
+
+        this.startDate.set(Calendar.HOUR_OF_DAY, 0);
+        this.startDate.set(Calendar.MINUTE, 0);
+        this.startDate.set(Calendar.SECOND, 0);
+        this.startDate.set(Calendar.MILLISECOND, 0);
     }
 
     public Calendar getEndDate()
@@ -84,6 +97,11 @@ public class MasterTask
     public void setEndDate(Calendar endDate)
     {
         this.endDate = endDate;
+
+        this.endDate.set(Calendar.HOUR_OF_DAY, 0);
+        this.endDate.set(Calendar.MINUTE, 0);
+        this.endDate.set(Calendar.SECOND, 0);
+        this.endDate.set(Calendar.MILLISECOND, 0);
     }
 
     public long getGroupId()
