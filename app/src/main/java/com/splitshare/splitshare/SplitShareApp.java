@@ -7,6 +7,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 /**
  * Created by armando on 10/9/17.
  */
@@ -18,4 +20,6 @@ public class SplitShareApp extends Application {
     public static FirebaseDatabase firebaseDatabase;
     public static GoogleApiClient mGoogleApiClient;
     public static SplitShareUser splitShareUser;
+    public static ArrayList<Group> usersGroups;
+    public static ArrayList<MasterTask> usersMasterTasks;
 }
