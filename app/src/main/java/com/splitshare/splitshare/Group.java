@@ -8,7 +8,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -173,13 +172,6 @@ public class Group
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-
-        Log.d("Group-GetUsers", "Size " + groupUsers.size());
-
-        for (User user: groupUsers)
-        {
-            Log.d("Group-GetUsers", user.getUserName());
-        }
 
         return groupUsers;
     }
