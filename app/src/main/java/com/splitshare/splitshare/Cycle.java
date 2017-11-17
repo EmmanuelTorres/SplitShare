@@ -42,7 +42,7 @@ public class Cycle {
     public boolean isNthDay;
 
     public int dayOfMonth;
-    public int nthOccurrence;
+    public int nthOccurrence; //TODO: not implemented
 
     // Default constructor makes a ONE_TIME cycle
     public Cycle()
@@ -66,8 +66,24 @@ public class Cycle {
         setSpacing(s);
     }
 
+    // Constructor for a MONTHLY cycle every dayOfWeek day of the weekOfMonth week
+    public Cycle(final int dayOfWeek, final int weekOfMonth, final int s)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            if (i == dayOfWeek)
+                daysOfWeek.add(i, true);
+            else
+                daysOfWeek.add(i, false);
+        }
+        type = cycleType.MONTHLY;
+        isNthDay = true;
+        nthOccurrence = weekOfMonth;
+        setSpacing(s);
+    }
+
     // Constructor for a WEEKLY cycle
-    public Cycle(final boolean[] customWeek, final int o, final int s)
+    public Cycle(final boolean[] customWeek, final int s)
     {
         type = cycleType.WEEKLY;
         isNthDay = false;
@@ -75,7 +91,6 @@ public class Cycle {
         {
             daysOfWeek.add(i, customWeek[i]);
         }
-        nthOccurrence = o;
         setSpacing(s);
     }
 
@@ -83,7 +98,7 @@ public class Cycle {
 
     // TODO: test this!!
     public boolean isOnDayWithStart(Calendar start, Calendar thisDay) {
-        Calendar temp = start;
+        Calendar temp = (Calendar)start.clone();
         thisDay.set(Calendar.HOUR_OF_DAY, 0);
         thisDay.set(Calendar.MINUTE, 0);
         thisDay.set(Calendar.SECOND, 0);
@@ -106,7 +121,7 @@ public class Cycle {
         } else if (type == cycleType.WEEKLY) {
             if(daysOfWeek.get(thisDay.get(Calendar.DAY_OF_WEEK)-1)) {
                 // Normalize both days to Sunday
-                Calendar temp2 = thisDay;
+                Calendar temp2 = (Calendar)thisDay.clone();
                 temp2.add(Calendar.DATE, 1 - temp2.get(Calendar.DAY_OF_WEEK));
                 temp.add(Calendar.DATE, 1 - temp.get(Calendar.DAY_OF_WEEK));
 

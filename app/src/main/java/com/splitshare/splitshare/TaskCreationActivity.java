@@ -68,7 +68,8 @@ public class TaskCreationActivity extends AppCompatActivity {
                 Task newTask = new Task(startDate.toCalendar(),title,"category?",SplitShareApp.acct.getDisplayName(),group);
                 MainActivity.addToTaskList(newTask);
 
-                cycle = new Cycle(2);
+                boolean[] oneWeek = {false, true, false, true, false, true, false};
+                cycle = new Cycle(oneWeek, 2);
 
                 //MasterTask(String title, String description, int type, Calendar startDate,
                 //Calendar endDate, long groupId, List<User> activeUsers, double paymentAmount,
