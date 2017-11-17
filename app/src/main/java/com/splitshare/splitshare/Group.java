@@ -33,6 +33,9 @@ public class Group
         this.groupName = groupName;
     }
 
+    public String getGroupTimestamp() { return groupTimestamp; }
+    public String getGroupName() { return groupName; }
+
     public Group(String groupTimestamp, String groupName)
     {
         this.groupTimestamp = groupTimestamp;
