@@ -16,7 +16,7 @@ public class MasterTask
     private int type;
     private Calendar startDate;
     private Calendar endDate;
-    private long groupId;
+    private String groupId;
     private List<User> activeUsers;
     // TODO: List<double> paymentDistribution;
     // and paymentAmount is the sum total
@@ -24,7 +24,7 @@ public class MasterTask
     private Cycle cycle;
 
     public MasterTask(String title, String description, int type, Calendar startDate,
-                      Calendar endDate, long groupId, List<User> activeUsers, double paymentAmount,
+                      Calendar endDate, String groupId, List<User> activeUsers, double paymentAmount,
                       Cycle cycle)
     {
         this.title = title;
@@ -40,7 +40,7 @@ public class MasterTask
 
     public void addToDatabase(String id)
     {
-        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("tasks/");
+        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("tasks/aiwiagsfah/tasks");
         taskReference.child(id).setValue(this);
     }
 
@@ -104,12 +104,12 @@ public class MasterTask
         this.endDate.set(Calendar.MILLISECOND, 0);
     }
 
-    public long getGroupId()
+    public String getGroupId()
     {
         return groupId;
     }
 
-    public void setGroupId(long groupId)
+    public void setGroupId(String groupId)
     {
         this.groupId = groupId;
     }
