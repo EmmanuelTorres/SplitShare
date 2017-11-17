@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 splitShareUser.getTasks();
             }
-        }, 10000);
+        }, 6000);
 
         if (usersGroups.size() > 0)
             Toast.makeText(this, "Member of " +
@@ -87,8 +87,7 @@ public class MainActivity extends AppCompatActivity
                 // Adds ourselves
                 //group.addMember(splitShareUser.getAccountId());
                 //group.addMember("6969");
-                TaskPopulation.populate();
-                //openTaskCreator();
+                openTaskCreator();
             }
         });
 

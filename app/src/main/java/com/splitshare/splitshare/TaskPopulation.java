@@ -29,9 +29,11 @@ public class TaskPopulation
                 Calendar currentDay = (Calendar)today.clone();
                 //breaks after either one month or 5 tasks spawn from this master task
                 for(int i = 0; i< 30; i++){
-                    if(limit == 5){break;}
+                    if(limit == 20){break;}
                    //if there is an event for this day
                    if(a.getCycle().isOnDayWithStart(a.getStartDate(), currentDay)){
+                       if (a.getEndDate().before(currentDay))
+                           break;
                        limit++;
                        //Create dumb task
                         SplitShareApp.populatedTask.add( a.createDumbTask((Calendar) currentDay.clone()));
