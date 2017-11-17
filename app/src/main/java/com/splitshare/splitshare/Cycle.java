@@ -42,7 +42,7 @@ public class Cycle {
     public boolean isNthDay;
 
     public int dayOfMonth;
-    public int nthOccurrence; //TODO: not implemented
+    public int nthOccurrence;
 
     // Default constructor makes a ONE_TIME cycle
     public Cycle()
@@ -69,15 +69,9 @@ public class Cycle {
     // Constructor for a MONTHLY cycle every dayOfWeek day of the weekOfMonth week
     public Cycle(final int dayOfWeek, final int weekOfMonth, final int s)
     {
-        for (int i = 0; i < 7; i++)
-        {
-            if (i == dayOfWeek)
-                daysOfWeek.add(i, true);
-            else
-                daysOfWeek.add(i, false);
-        }
         type = cycleType.MONTHLY;
-        isNthDay = true;
+        isNthDay = false;
+        dayOfMonth = dayOfWeek;
         nthOccurrence = weekOfMonth;
         setSpacing(s);
     }
@@ -94,9 +88,15 @@ public class Cycle {
         setSpacing(s);
     }
 
-    // TODO: constructor for yearly events
-
-    // TODO: test this!!
+    // Constructor for a YEARLY cycle
+    // IS_YEARLY is a dummy variable for overloaded constructor to be unique
+    public Cycle(final int month, final int day, final boolean IS_YEARLY) {
+        type = cycleType.YEARLY;
+        dayOfMonth = day;
+        // nthOccurrence = month (0 index)
+        nthOccurrence = month;
+    }
+    
     public boolean isOnDayWithStart(Calendar start, Calendar thisDay) {
         Calendar temp = (Calendar)start.clone();
         thisDay.set(Calendar.HOUR_OF_DAY, 0);
@@ -141,8 +141,8 @@ public class Cycle {
                     if (diff % spacing == 0) return true;
                 }
             } else {
-                if (start.get(Calendar.WEEK_OF_MONTH) == thisDay.get(Calendar.WEEK_OF_MONTH) &&
-                        start.get(Calendar.DAY_OF_WEEK) == thisDay.get(Calendar.DAY_OF_WEEK)) {
+                if (nthOccurrence == thisDay.get(Calendar.WEEK_OF_MONTH) &&
+                        dayOfMonth == thisDay.get(Calendar.DAY_OF_WEEK)) {
 
                     int numMonths1 = start.get(Calendar.MONTH)+12*start.get(Calendar.YEAR);
                     int numMonths2 = thisDay.get(Calendar.MONTH)+12*thisDay.get(Calendar.YEAR);
@@ -151,7 +151,8 @@ public class Cycle {
                 }
             }
         } else if (type == cycleType.YEARLY) {
-            if (start.get(Calendar.DAY_OF_YEAR) == thisDay.get(Calendar.DAY_OF_YEAR))
+            if (nthOccurrence == thisDay.get(Calendar.MONTH) &&
+                    dayOfMonth == thisDay.get(Calendar.DAY_OF_MONTH))
                 return true;
         }
 

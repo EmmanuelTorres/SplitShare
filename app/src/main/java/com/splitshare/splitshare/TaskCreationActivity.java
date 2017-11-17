@@ -69,7 +69,7 @@ public class TaskCreationActivity extends AppCompatActivity {
                 MainActivity.addToTaskList(newTask);
 
                 boolean[] oneWeek = {false, true, false, true, false, true, false};
-                cycle = new Cycle(oneWeek, 2);
+                cycle = new Cycle(startDate.toCalendar().get(Calendar.DAY_OF_WEEK), startDate.toCalendar().get(Calendar.WEEK_OF_MONTH), 2);
 
                 //MasterTask(String title, String description, int type, Calendar startDate,
                 //Calendar endDate, long groupId, List<User> activeUsers, double paymentAmount,

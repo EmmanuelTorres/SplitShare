@@ -28,7 +28,7 @@ public class TaskPopulation
                 int limit = 0;
                 Calendar currentDay = (Calendar)today.clone();
                 //breaks after either one month or 5 tasks spawn from this master task
-                for(int i = 0; i< 30; i++){
+                for(int i = 0; i< 100; i++){
                     if(limit == 20){break;}
                    //if there is an event for this day
                    if(a.getCycle().isOnDayWithStart(a.getStartDate(), currentDay)){
