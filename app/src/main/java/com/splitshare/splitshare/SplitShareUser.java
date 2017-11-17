@@ -133,9 +133,9 @@ public class SplitShareUser extends User
                         // Iterate through the tasks
                         for (DataSnapshot currentTask: dataSnapshot.getChildren())
                         {
-                            MasterTask task = currentTask.getValue(MasterTask.class);
+                            StoredMasterTask task = currentTask.getValue(StoredMasterTask.class);
 
-                            SplitShareApp.usersMasterTasks.add(task);
+                            SplitShareApp.usersMasterTasks.add(task.toMasterTask());
                         }
                     }
                 }
