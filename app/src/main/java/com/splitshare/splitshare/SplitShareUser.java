@@ -113,4 +113,36 @@ public class SplitShareUser extends User
             public void onCancelled(DatabaseError databaseError) {}
         });
     }
+
+    public void getTasks()
+    {
+        // The Groups belonging to a user
+        for (Group currentGroup : SplitShareApp.usersGroups)
+        {
+            // Temporary reference to group's task inside a database
+            DatabaseReference groupReference = SplitShareApp.firebaseDatabase.getReference("/groups/" + currentGroup.getGroupTimestamp() + "/GroupTasks/");
+
+            groupReference.addListenerForSingleValueEvent(new ValueEventListener()
+            {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot)
+                {
+                    // If the group has tasks
+                    if (dataSnapshot.exists())
+                    {
+                        // Iterate through the tasks
+                        for (DataSnapshot currentTask: dataSnapshot.getChildren())
+                        {
+                            MasterTask task = currentTask.getValue(MasterTask.class);
+
+                            SplitShareApp.usersMasterTasks.add(task);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+        }
+    }
 }
