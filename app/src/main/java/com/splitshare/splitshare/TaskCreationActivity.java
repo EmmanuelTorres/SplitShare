@@ -73,7 +73,7 @@ public class TaskCreationActivity extends AppCompatActivity {
                 //Cycle cycle)
                 if (usersGroups.size() > 0) {
                     String tempTimestamp = usersGroups.get(0).getGroupTimestamp();
-                    StoredMasterTask newMasterTask = new StoredMasterTask(title, description, 0, startDate, endDate, tempTimestamp, activeUsers, 123, cycle);
+                    StoredMasterTask newMasterTask = new StoredMasterTask(title, description, 0, startDate, endDate, tempTimestamp, activeUsers, false, 123, cycle);
                     String mTaskID = title + (int) (Math.random() * 100);
                     System.out.println(mTaskID);
                     newMasterTask.addToDatabase();

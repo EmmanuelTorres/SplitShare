@@ -21,6 +21,7 @@ public class MasterTask
     // TODO: List<double> paymentDistribution;
     // and paymentAmount is the sum total
     private double paymentAmount;
+    public boolean costDue;
     private Cycle cycle;
 
     public MasterTask() {
@@ -29,7 +30,7 @@ public class MasterTask
     }
 
     public MasterTask(String title, String description, int type, Calendar startDate,
-                      Calendar endDate, String groupId, List<User> activeUsers, double paymentAmount,
+                      Calendar endDate, String groupId, List<User> activeUsers, boolean costDue, double paymentAmount,
                       Cycle cycle)
     {
         this.title = title;
@@ -39,6 +40,7 @@ public class MasterTask
         setEndDate(endDate);
         this.groupId = groupId;
         this.activeUsers = activeUsers;
+        this.costDue = costDue;
         this.paymentAmount = paymentAmount;
         this.cycle = cycle;
     }
@@ -148,6 +150,6 @@ public class MasterTask
         SimpleDate sd = new SimpleDate(this.startDate.get(Calendar.MONTH), this.startDate.get(Calendar.DAY_OF_MONTH), this.startDate.get(Calendar.YEAR));
         SimpleDate ed = new SimpleDate(this.endDate.get(Calendar.MONTH), this.endDate.get(Calendar.DAY_OF_MONTH), this.endDate.get(Calendar.YEAR));
         return new StoredMasterTask(title, description, type, sd,
-                ed, groupId, activeUsers, paymentAmount, cycle);
+                ed, groupId, activeUsers, costDue, paymentAmount, cycle);
     }
 }
