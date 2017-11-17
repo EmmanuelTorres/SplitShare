@@ -71,7 +71,7 @@ public class Task {
     }
     String getDate() {
         String day = String.format("%02d", date.get(Calendar.DATE));
-        String month = String.format("%02d", date.get(Calendar.MONTH)+1); // +1 because Calendars ammirite?
+        String month = String.format("%02d", date.get(Calendar.MONTH) + 1); // +1 because Calendars ammirite?
         String year = String.format("%4d", date.get(Calendar.YEAR));
         return month + "/" + day + "/" + year;
     }

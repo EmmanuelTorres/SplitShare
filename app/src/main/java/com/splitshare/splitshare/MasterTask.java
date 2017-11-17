@@ -143,7 +143,7 @@ public class MasterTask
 
     //this is for task population and convience
     public Task createDumbTask(Calendar date){
-        return new Task(date, this.title,this.category, "", this.group);
+        return new Task(date, this.title, this.category, "", this.group);
     }
 
 //    Task(Calendar d, String t, String c, String am, Group g)

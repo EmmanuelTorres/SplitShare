@@ -125,9 +125,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public static void addAllToTaskList(ArrayList<Task> tasks) {
+        mainTaskList.clear();
         for(Task a : tasks) {
             mainTaskList.add(a);
         }
+        tasks.clear();
         ((ArrayAdapter)taskViewList).notifyDataSetChanged();
     }
 
