@@ -29,8 +29,8 @@ public class MasterTask
         endDate = Calendar.getInstance();
     }
 
-    public MasterTask(String title, String description, int type, Calendar startDate,
-                      Calendar endDate, String groupId, List<User> activeUsers, boolean costDue, double paymentAmount,
+    public MasterTask(String title, String description, String category, Calendar startDate,
+                      Calendar endDate, Group group, List<User> activeUsers, boolean costDue, double paymentAmount,
                       Cycle cycle)
     {
         this.title = title;
@@ -171,7 +171,7 @@ public class MasterTask
     public StoredMasterTask toStoredMasterTask() {
         SimpleDate sd = new SimpleDate(this.startDate.get(Calendar.MONTH), this.startDate.get(Calendar.DAY_OF_MONTH), this.startDate.get(Calendar.YEAR));
         SimpleDate ed = new SimpleDate(this.endDate.get(Calendar.MONTH), this.endDate.get(Calendar.DAY_OF_MONTH), this.endDate.get(Calendar.YEAR));
-        return new StoredMasterTask(title, description, type, sd,
-                ed, groupId, activeUsers, costDue, paymentAmount, cycle);
+        return new StoredMasterTask(title, description, category, sd,
+                ed, group, activeUsers, costDue, paymentAmount, cycle);
     }
 }

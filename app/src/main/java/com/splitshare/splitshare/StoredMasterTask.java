@@ -12,10 +12,10 @@ import java.util.List;
 public class StoredMasterTask {
     public String title;
     public String description;
-    public int type;
+    public String category;
     public SimpleDate startDate;
     public SimpleDate endDate;
-    public String groupId;
+    public Group group;
     public List<User> activeUsers;
     // TODO: List<double> paymentDistribution;
     // and paymentAmount is the sum total
@@ -27,16 +27,16 @@ public class StoredMasterTask {
 
     }
 
-    public StoredMasterTask(String title, String description, int type, SimpleDate startDate,
-                      SimpleDate endDate, String groupId, List<User> activeUsers, boolean costDue, double paymentAmount,
+    public StoredMasterTask(String title, String description, String category, SimpleDate startDate,
+                      SimpleDate endDate, Group group, List<User> activeUsers, boolean costDue, double paymentAmount,
                       Cycle cycle)
     {
         this.title = title;
         this.description = description;
-        this.type = type;
+        this.category = category;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.groupId = groupId;
+        this.group = group;
         this.activeUsers = activeUsers;
         this.costDue = costDue;
         this.paymentAmount = paymentAmount;
@@ -45,7 +45,7 @@ public class StoredMasterTask {
 
     public void addToDatabase()
     {
-        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("groups/" + groupId + "/GroupTasks/" + title + "/");
+        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("groups/" + group.getGroupTimestamp() + "/GroupTasks/" + title + "/");
         taskReference.setValue(this);
     }
 
@@ -60,7 +60,7 @@ public class StoredMasterTask {
         ed.set(Calendar.MONTH, endDate.month);
         ed.set(Calendar.YEAR, endDate.year);
 
-        return new MasterTask(title, description, type, sd,
-                ed, groupId, activeUsers, costDue, paymentAmount, cycle);
+        return new MasterTask(title, description, category, sd,
+                ed, group, activeUsers, costDue, paymentAmount, cycle);
     }
 }
