@@ -5,6 +5,9 @@
     <item android:title="Groups">
         <menu>
             <item
+                android:id="@+id/add_group"
+                android:title="Add Group" />
+            <item
                 android:id="@+id/nav_camera"
                 android:icon="@drawable/ic_menu_camera"
                 android:title="Photography Group" />

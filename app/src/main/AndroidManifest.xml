@@ -33,6 +33,10 @@
             android:label="Create Task">
         </activity>
         <activity
+            android:name=".GroupCreationActivity"
+            android:label="Create Group">
+        </activity>
+        <activity
             android:name=".DateSelectionActivity"
             android:label="Select a day">
         </activity>
