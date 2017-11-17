@@ -38,10 +38,10 @@ public class MasterTask
         this.cycle = cycle;
     }
 
-    public void addToDatabase(String id)
+    public void addToDatabase()
     {
-        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("tasks/aiwiagsfah/tasks");
-        taskReference.child(id).setValue(this);
+        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("groups/" + groupId + "/GroupTasks/" + title + "/");
+        taskReference.setValue(this);
     }
 
     public String getTitle()
