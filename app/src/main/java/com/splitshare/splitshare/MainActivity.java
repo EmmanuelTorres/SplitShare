@@ -114,6 +114,10 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(this, TaskCreationActivity.class));
     }
 
+    private void openGroupCreator() {
+        startActivity(new Intent(this, GroupCreationActivity.class));
+    }
+
     public static void addToTaskList(Task inputTask)
     {
         mainTaskList.add(inputTask);
@@ -147,8 +151,11 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
+        if (id == R.id.add_group)
+        {
+            openGroupCreator();
+        }
+        else if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
