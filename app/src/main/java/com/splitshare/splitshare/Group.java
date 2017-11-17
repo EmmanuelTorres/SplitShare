@@ -15,30 +15,27 @@ public class Group
 {
     // The unique timestamp of the group
     private String groupTimestamp;
-    // The unique id of the group
-    private String groupId;
     // The name of the group
     private String groupName;
 
     // Default constructor
     public Group()
     {
-        this.groupId = null;
+        this.groupTimestamp = null;
         this.groupName = "Default Name";
     }
 
-    // Creates a group with a groupId and sets the groupName to the Firebase value
+    // Creates a group with a groupTimestamp and sets the groupName to the Firebase value
     // With this constructor, we can do anything we want in this class
-    public Group(String groupId)
+    public Group(String groupName)
     {
-        this.groupId = groupId;
-        this.groupName = "Default Name";
+        this.groupTimestamp = null;
+        this.groupName = groupName;
     }
 
-    public Group(String groupTimestamp, String groupId, String groupName)
+    public Group(String groupTimestamp, String groupName)
     {
         this.groupTimestamp = groupTimestamp;
-        this.groupId = groupId;
         this.groupName = groupName;
     }
 
@@ -46,7 +43,7 @@ public class Group
     public void createGroup()
     {
         // Creates a new object that references the Firebase database
-        final DatabaseReference groupsReference = SplitShareApp.firebaseDatabase.getReference("groups/");
+        DatabaseReference groupsReference = SplitShareApp.firebaseDatabase.getReference("groups/");
 
         // If the connection to Firebase is bad
         if (groupsReference == null)
@@ -57,60 +54,32 @@ public class Group
             return;
         }
 
-        // Queries for the last group that was added, AKA the group with the largest GroupID
-        Query largestGroupId = groupsReference.orderByChild("GroupID").limitToLast(1);
+        // Gets a random timestamp from Firebase that will be used as our unique identifier for the group
+        groupTimestamp = groupsReference.push().getKey();
 
-        // A single value event listener to traverse the snapshot
-        largestGroupId.addListenerForSingleValueEvent(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                // A variable newGroupId will always be used, regardless of if this is the first
-                // group or not. It just belongs to the group being added and by default it is 0
-                String newGroupId = "0";
+        // A HashMap of String keys and values can be used to insert things into the
+        // table in key:value form
+        HashMap<String, String> groupEntries = new HashMap<>();
+        groupEntries.put("GroupID", groupTimestamp);
+        groupEntries.put("GroupName", groupName);
 
-                // This will handle what to set newGroupId to if this isn't the first group
-                // If there exists a group with a GroupID
-                if (dataSnapshot.exists())
-                {
-                    // No matter what, there is only one group that is returned due to our limit
-                    // Gets the part of that table that we can modify (past the timestamp)
-                    DataSnapshot groupValues = dataSnapshot.getChildren().iterator().next();
+        // Changes the reference from Groups/ to Groups/GroupTimestamp/
+        groupsReference = groupsReference.child(groupTimestamp);
 
-                    // Gets the group id of our snapshot, aka the largest group id in the table
-                    String groupId = groupValues.child("GroupID").getValue().toString();
+        // Push will assign a new entry within the Groups/GroupTimestamp table and the parent folder
+        // will be a random timestamp value assigned by Firebase
+        // We use that timestamped key to set the value of a new table, our groupEntries above
+        groupsReference.setValue(groupEntries);
 
-                    // Adds 1 to that for our new group
-                    newGroupId = Integer.toString(Integer.parseInt(groupId) + 1);
-                }
+        // We re-purpose groupEntries HashMap to initialize the group with a member (the user)
+        groupEntries.clear();
 
-                // A HashMap of String keys and values can be used to insert things into the
-                // table in key:value form
-                HashMap<String, String> groupEntries = new HashMap<>();
-                groupEntries.put("GroupName", groupName);
-                groupEntries.put("GroupID", newGroupId);
+        // Our first member will be us in the form of UserID:Name
+        groupEntries.put(SplitShareApp.acct.getId(), SplitShareApp.acct.getDisplayName());
+        groupsReference.child("GroupMembers").setValue(groupEntries);
 
-                // Push will assign a new entry within the 'groups' table and the parent folder will
-                // be a random timestamp value assigned by Firebase
-                // We use that timestamped key to set the value of a new table, our groupEntries above
-                String key = groupsReference.push().getKey();
-                groupsReference.child(key).setValue(groupEntries);
-
-                // We re-purpose groupEntries HashMap to initialize the group with a member (the user)
-                groupEntries.clear();
-
-                // Our first member will be us in the form of UserID:Name
-                groupEntries.put(SplitShareApp.acct.getId(), SplitShareApp.acct.getDisplayName());
-                groupsReference.child(key).child("GroupMembers").setValue(groupEntries);
-
-                // Add this group to the user's id
-                SplitShareApp.splitShareUser.addToGroup(key, newGroupId);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
+        // Add this group to the user's id
+        SplitShareApp.splitShareUser.addToGroup(groupTimestamp, groupName);
     }
 
     /*

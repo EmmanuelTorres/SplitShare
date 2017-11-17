@@ -60,7 +60,7 @@ public class User
      * Here's the crazy part: we can't check for duplicates but it technically doesn't
      * matter, and Firebase can sometimes tell its a duplicate and not change anything
      */
-    public void addToGroup(final String groupTimestamp, final String groupId)
+    public void addToGroup(final String groupTimestamp, final String groupName)
     {
         // If the database reference is null, the connection to the server isn't good
         if (accountReference == null)
@@ -73,33 +73,8 @@ public class User
 
         // Adds a group timestamp:id value to the Groups part of the user's table
         // Functionally replaces the commented code below
-        Log.d("User-AddToGroup", "Adding group " + groupTimestamp + " to user " + userName);
-        accountReference.child("Groups").child(groupTimestamp).setValue(groupId);
-
-//        // A query that looks for the person who is being added to a group
-//        Query query = accountReference.child("Groups");
-//
-//        query.addListenerForSingleValueEvent(new ValueEventListener()
-//        {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot)
-//            {
-//                // Get the users/userId/groups/groupId table
-//                DataSnapshot groupToAdd = dataSnapshot.child(groupTimestamp);
-//
-//                // If the person doesn't already have this group in their Groups table
-//                if (!groupToAdd.exists())
-//                {
-//                    // Add them
-//                    Log.d("Account", "Adding group " + groupId + " to " + userName);
-//
-//                    groupToAdd.getRef().setValue(groupId);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {}
-//        });
+        Log.d("User-AddToGroup", "Adding group " + groupName + " to user " + userName);
+        accountReference.child("Groups").child(groupTimestamp).setValue(groupName);
     }
 
     /*

@@ -2,6 +2,11 @@ package com.splitshare.splitshare;
 
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.HashMap;
 
 public class SplitShareUser extends User
@@ -25,13 +30,13 @@ public class SplitShareUser extends User
     }
 
     /*
-     * Creates a brand new account for the user
-     * Since this doesn't implement any checks due to query-less Firebase interaction, this may
-     * delete all groups that a user belongs to
+     * Creates a brand new account for the user of the app
      */
     public void createAccount()
     {
-        if (super.getAccountReference() == null)
+        final DatabaseReference accountReference = super.getAccountReference();
+
+        if (accountReference == null)
         {
             // Log the mistake for easy debugging
             Log.d("User-CreateAccount", "The database reference was null");
@@ -39,12 +44,36 @@ public class SplitShareUser extends User
             return;
         }
 
-        HashMap<String, String> userData = new HashMap<>();
-        userData.put("UserID", super.getUserId());
-        userData.put("Name", super.getUserName());
-        userData.put("Email", super.getUserEmail());
+        // Variables need to be final to be used inside anonymous inner classes
+        final String userId = super.getUserId();
+        final String userName = super.getUserName();
+        final String userEmail = super.getUserEmail();
 
-        // Sets the above entries as the values for the user
-        super.getAccountReference().setValue(userData);
+        // Attach a listener to the reference that points to Users/UserId/
+        accountReference.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                if (!dataSnapshot.exists())
+                {
+                    Log.d("User-CreateAccount", "Creating a user account");
+
+                    HashMap<String, String> userData = new HashMap<>();
+                    userData.put("UserID", userId);
+                    userData.put("Name", userName);
+                    userData.put("Email", userEmail);
+
+                    accountReference.setValue(userData);
+                }
+                else
+                {
+                    Log.d("User-CreateAccount", "The user " + userEmail + " already exists");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 }
