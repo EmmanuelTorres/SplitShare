@@ -1,5 +1,6 @@
 package com.splitshare.splitshare;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,17 +15,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.splitshare.splitshare.SplitShareApp.splitShareUser;
+import static com.splitshare.splitshare.SplitShareApp.usersGroups;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
     public static List<Task> mainTaskList = new ArrayList<Task>();
+    public static Activity mainActRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,14 +40,38 @@ public class MainActivity extends AppCompatActivity
 
         // Establishes a global connection to the
         SplitShareApp.firebaseDatabase = FirebaseDatabase.getInstance();
+        usersGroups = new ArrayList<Group>();
+        splitShareUser = new SplitShareUser();
+        splitShareUser.createAccount();
+        splitShareUser.getGroups();
+        if (usersGroups.size() > 0)
+            Toast.makeText(this, "Member of " +
+                usersGroups.size() + " groups!" , Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(this, "No groups!", Toast.LENGTH_LONG).show();
+
+        mainActRef = this;
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Group smartGroup = new Group("-Kyr49hkM6fxJB8lZBdR", "0", "Test");
-//                smartGroup.removeMember("106515564144896533916");
-                smartGroup.getUsers();
+
+
+                // Creates a SplitShareUser object to interact with the database to make
+                // accounts, etc
+                if (usersGroups.size() > 0)
+                    Toast.makeText(mainActRef, "Member of " + usersGroups.size() + " groups!" , Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(mainActRef, "No groups!", Toast.LENGTH_LONG).show();
+                //Group group = new Group("Fumbling Narwhals");
+                // Creates a group with ourselves as the sole member
+                //group.createGroup();
+                // Adds ourselves
+                //group.addMember(splitShareUser.getAccountId());
+                //group.addMember("6969");
+
+                openTaskCreator();
             }
         });
 
