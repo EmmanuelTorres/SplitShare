@@ -39,6 +39,8 @@ public class TaskPopulation
             }
 
         }
+
+        MainActivity.addAllToTaskList(SplitShareApp.populatedTask);
     }
 
 }

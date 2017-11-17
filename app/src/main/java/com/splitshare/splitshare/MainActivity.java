@@ -87,8 +87,8 @@ public class MainActivity extends AppCompatActivity
                 // Adds ourselves
                 //group.addMember(splitShareUser.getAccountId());
                 //group.addMember("6969");
-
-                openTaskCreator();
+                TaskPopulation.populate();
+                //openTaskCreator();
             }
         });
 
@@ -121,6 +121,13 @@ public class MainActivity extends AppCompatActivity
     public static void addToTaskList(Task inputTask)
     {
         mainTaskList.add(inputTask);
+        ((ArrayAdapter)taskViewList).notifyDataSetChanged();
+    }
+
+    public static void addAllToTaskList(ArrayList<Task> tasks) {
+        for(Task a : tasks) {
+            mainTaskList.add(a);
+        }
         ((ArrayAdapter)taskViewList).notifyDataSetChanged();
     }
 

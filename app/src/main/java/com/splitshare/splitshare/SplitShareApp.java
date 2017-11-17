@@ -20,7 +20,7 @@ public class SplitShareApp extends Application {
     public static FirebaseDatabase firebaseDatabase;
     public static GoogleApiClient mGoogleApiClient;
     public static SplitShareUser splitShareUser;
-    public static ArrayList<Group> usersGroups;
-    public static ArrayList<MasterTask> usersMasterTasks;
-    public static ArrayList<Task> populatedTask;
+    public static ArrayList<Group> usersGroups = new ArrayList<Group>();
+    public static ArrayList<MasterTask> usersMasterTasks = new ArrayList<MasterTask>();
+    public static ArrayList<Task> populatedTask = new ArrayList<Task>();
 }

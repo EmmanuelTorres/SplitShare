@@ -82,14 +82,18 @@ public class Cycle {
     // TODO: constructor for yearly events
 
     // TODO: test this!!
-    public boolean isOnDayWithStart(GregorianCalendar start, GregorianCalendar thisDay) {
-        GregorianCalendar temp = start;
+    public boolean isOnDayWithStart(Calendar start, Calendar thisDay) {
+        Calendar temp = start;
+        thisDay.set(Calendar.HOUR_OF_DAY, 0);
+        thisDay.set(Calendar.MINUTE, 0);
+        thisDay.set(Calendar.SECOND, 0);
+        thisDay.set(Calendar.MILLISECOND, 0);
         // always false if this event is before the day we're checking
         if (thisDay.before(start))
             return false;
         // else check based on type
         if (type == cycleType.ONE_TIME) {
-            if (start.equals(thisDay))
+            if (temp.equals(thisDay))
                 return true;
         } else if (type == cycleType.DAILY) {
             // add spacing until we equal or overshoot
@@ -102,7 +106,7 @@ public class Cycle {
         } else if (type == cycleType.WEEKLY) {
             if(daysOfWeek.get(thisDay.get(Calendar.DAY_OF_WEEK)-1)) {
                 // Normalize both days to Sunday
-                GregorianCalendar temp2 = thisDay;
+                Calendar temp2 = thisDay;
                 temp2.add(Calendar.DATE, 1 - temp2.get(Calendar.DAY_OF_WEEK));
                 temp.add(Calendar.DATE, 1 - temp.get(Calendar.DAY_OF_WEEK));
 
