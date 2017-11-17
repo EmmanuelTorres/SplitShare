@@ -147,4 +147,9 @@ public class Group
 
         return groupUsers;
     }
+
+    @Override
+    public String toString() {
+        return groupName;
+    }
 }
