@@ -2,6 +2,7 @@ package com.splitshare.splitshare;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by emmanuel on 10/9/17.
@@ -38,10 +39,10 @@ public class Cycle {
      * If true, is nth day of month for MONTHLY events, marked by dayOfMonth.
      * If false, is nthOccurrence of first true daysOfWeek day (e.g., 2nd wednesday)
      */
-    private boolean isNthDay;
+    public boolean isNthDay;
 
-    private int dayOfMonth;
-    private int nthOccurrence;
+    public int dayOfMonth;
+    public int nthOccurrence;
 
     // Default constructor makes a ONE_TIME cycle
     public Cycle()
@@ -81,8 +82,8 @@ public class Cycle {
     // TODO: constructor for yearly events
 
     // TODO: test this!!
-    public boolean isOnDayWithStart(Calendar start, Calendar thisDay) {
-        Calendar temp = start;
+    public boolean isOnDayWithStart(GregorianCalendar start, GregorianCalendar thisDay) {
+        GregorianCalendar temp = start;
         // always false if this event is before the day we're checking
         if (thisDay.before(start))
             return false;
@@ -101,7 +102,7 @@ public class Cycle {
         } else if (type == cycleType.WEEKLY) {
             if(daysOfWeek.get(thisDay.get(Calendar.DAY_OF_WEEK)-1)) {
                 // Normalize both days to Sunday
-                Calendar temp2 = thisDay;
+                GregorianCalendar temp2 = thisDay;
                 temp2.add(Calendar.DATE, 1 - temp2.get(Calendar.DAY_OF_WEEK));
                 temp.add(Calendar.DATE, 1 - temp.get(Calendar.DAY_OF_WEEK));
 

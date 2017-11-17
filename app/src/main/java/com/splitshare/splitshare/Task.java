@@ -13,14 +13,14 @@ import static java.util.Calendar.MONTH;
  */
 
 public class Task {
-    Calendar date;
-    String title;
-    String category;
-    String assignedMember;
-    Group group;
-    boolean costDue;
-    String feeCollectionMember;
-    double fee;
+    public Calendar date;
+    public String title;
+    public String category;
+    public String assignedMember;
+    public Group group;
+    public boolean costDue;
+    public String feeCollectionMember;
+    public double fee;
 
     Task()
     {
@@ -71,7 +71,7 @@ public class Task {
     }
     String getDate() {
         String day = String.format("%02d", date.get(Calendar.DATE));
-        String month = String.format("%02d", date.get(Calendar.MONTH));
+        String month = String.format("%02d", date.get(Calendar.MONTH)+1); // +1 because Calendars ammirite?
         String year = String.format("%4d", date.get(Calendar.YEAR));
         return month + "/" + day + "/" + year;
     }

@@ -25,8 +25,8 @@ import java.util.List;
 import static com.splitshare.splitshare.SplitShareApp.usersGroups;
 
 public class TaskCreationActivity extends AppCompatActivity {
-    public static Calendar startDate = new GregorianCalendar();
-    public static Calendar endDate = new GregorianCalendar();
+    public static SimpleDate startDate;
+    public static SimpleDate endDate;
     static final int SET_START_DATE_REQ = 1;
     static final int SET_END_DATE_REQ = 2;
     private boolean startDateIsSet = false;
@@ -65,7 +65,7 @@ public class TaskCreationActivity extends AppCompatActivity {
                 int pos = ((Spinner)findViewById(R.id.spinner)).getSelectedItemPosition();
                 Group group = usersGroups.get(pos);
 
-                Task newTask = new Task(startDate,title,"category?",SplitShareApp.acct.getDisplayName(),group);
+                Task newTask = new Task(startDate.toCalendar(),title,"category?",SplitShareApp.acct.getDisplayName(),group);
                 MainActivity.addToTaskList(newTask);
 
                 //MasterTask(String title, String description, int type, Calendar startDate,
@@ -73,7 +73,7 @@ public class TaskCreationActivity extends AppCompatActivity {
                 //Cycle cycle)
                 if (usersGroups.size() > 0) {
                     String tempTimestamp = usersGroups.get(0).getGroupTimestamp();
-                    MasterTask newMasterTask = new MasterTask(title, description, 0, startDate, endDate, tempTimestamp, activeUsers, 123, cycle);
+                    StoredMasterTask newMasterTask = new StoredMasterTask(title, description, 0, startDate, endDate, tempTimestamp, activeUsers, 123, cycle);
                     String mTaskID = title + (int) (Math.random() * 100);
                     System.out.println(mTaskID);
                     newMasterTask.addToDatabase();
@@ -122,16 +122,14 @@ public class TaskCreationActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             if (requestCode == SET_START_DATE_REQ) {
-                startDate = Calendar.getInstance();
-                startDate.set(Calendar.YEAR, data.getIntExtra("YEAR", 1999));
-                startDate.set(Calendar.MONTH, data.getIntExtra("MONTH", 4));
-                startDate.set(Calendar.DAY_OF_MONTH, data.getIntExtra("DAY", 21));
+                startDate = new SimpleDate(data.getIntExtra("MONTH", 4),
+                        data.getIntExtra("DAY", 21),
+                        data.getIntExtra("YEAR", 1999));
                 startDateIsSet = true;
             } else if (requestCode == SET_END_DATE_REQ) {
-                endDate = Calendar.getInstance();
-                endDate.set(Calendar.YEAR, data.getIntExtra("YEAR", 1999));
-                endDate.set(Calendar.MONTH, data.getIntExtra("MONTH", 4));
-                endDate.set(Calendar.DAY_OF_MONTH, data.getIntExtra("DAY", 21));
+                endDate = new SimpleDate(data.getIntExtra("MONTH", 4),
+                        data.getIntExtra("DAY", 21),
+                        data.getIntExtra("YEAR", 1999));
                 endDateIsSet = true;
             }
             if (startDateIsSet && endDateIsSet) {

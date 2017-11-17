@@ -23,6 +23,11 @@ public class MasterTask
     private double paymentAmount;
     private Cycle cycle;
 
+    public MasterTask() {
+        startDate = Calendar.getInstance();
+        endDate = Calendar.getInstance();
+    }
+
     public MasterTask(String title, String description, int type, Calendar startDate,
                       Calendar endDate, String groupId, List<User> activeUsers, double paymentAmount,
                       Cycle cycle)
@@ -38,11 +43,6 @@ public class MasterTask
         this.cycle = cycle;
     }
 
-    public void addToDatabase()
-    {
-        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("groups/" + groupId + "/GroupTasks/" + title + "/");
-        taskReference.setValue(this);
-    }
 
     public String getTitle()
     {
@@ -142,5 +142,12 @@ public class MasterTask
     public void setCycle(Cycle cycle)
     {
         this.cycle = cycle;
+    }
+
+    public StoredMasterTask toStoredMasterTask() {
+        SimpleDate sd = new SimpleDate(this.startDate.get(Calendar.MONTH), this.startDate.get(Calendar.DAY_OF_MONTH), this.startDate.get(Calendar.YEAR));
+        SimpleDate ed = new SimpleDate(this.endDate.get(Calendar.MONTH), this.endDate.get(Calendar.DAY_OF_MONTH), this.endDate.get(Calendar.YEAR));
+        return new StoredMasterTask(title, description, type, sd,
+                ed, groupId, activeUsers, paymentAmount, cycle);
     }
 }

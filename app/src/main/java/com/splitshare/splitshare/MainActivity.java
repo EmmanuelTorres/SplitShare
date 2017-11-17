@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,16 +22,20 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.splitshare.splitshare.SplitShareApp.splitShareUser;
 import static com.splitshare.splitshare.SplitShareApp.usersGroups;
+import static com.splitshare.splitshare.SplitShareApp.usersMasterTasks;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    public static List<Task> mainTaskList = new ArrayList<Task>();
     public static Activity mainActRef;
+    public static List<Task> mainTaskList = new ArrayList<Task>();
+    public static ListAdapter taskViewList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,17 +45,29 @@ public class MainActivity extends AppCompatActivity
 
         // Establishes a global connection to the
         SplitShareApp.firebaseDatabase = FirebaseDatabase.getInstance();
-        usersGroups = new ArrayList<Group>();
-        splitShareUser = new SplitShareUser();
+        SplitShareApp.splitShareUser = new SplitShareUser();
+        //usersGroups = new ArrayList<Group>();
+        //splitShareUser = new SplitShareUser();
+        // used so things can externally update the agenda
+        mainActRef = this;
+        taskViewList = new TaskAdapter(mainActRef, mainTaskList);
+
         splitShareUser.createAccount();
         splitShareUser.getGroups();
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                splitShareUser.getTasks();
+            }
+        }, 10000);
+
         if (usersGroups.size() > 0)
             Toast.makeText(this, "Member of " +
                 usersGroups.size() + " groups!" , Toast.LENGTH_LONG).show();
         else
             Toast.makeText(this, "No groups!", Toast.LENGTH_LONG).show();
 
-        mainActRef = this;
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -60,10 +77,10 @@ public class MainActivity extends AppCompatActivity
 
                 // Creates a SplitShareUser object to interact with the database to make
                 // accounts, etc
-                if (usersGroups.size() > 0)
-                    Toast.makeText(mainActRef, "Member of " + usersGroups.size() + " groups!" , Toast.LENGTH_LONG).show();
+                if (usersMasterTasks.size() > 0)
+                    Toast.makeText(mainActRef, "We have " + usersMasterTasks.size() + " MasterTasks!" , Toast.LENGTH_LONG).show();
                 else
-                    Toast.makeText(mainActRef, "No groups!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mainActRef, "No tasks!", Toast.LENGTH_LONG).show();
                 //Group group = new Group("Fumbling Narwhals");
                 // Creates a group with ourselves as the sole member
                 //group.createGroup();
@@ -86,10 +103,9 @@ public class MainActivity extends AppCompatActivity
 
 
 
-//        mainTaskList.add(new Task());
-//        mainTaskList.add(new Task());
-//        mainTaskList.add(new Task());
-        ListAdapter taskViewList = new TaskAdapter(this, mainTaskList);
+        //mainTaskList.add(new Task());
+        //mainTaskList.add(new Task());
+        //mainTaskList.add(new Task());
         ListView mainTaskView = (ListView) findViewById(R.id.mainListView);
         mainTaskView.setAdapter(taskViewList);
     }
@@ -105,6 +121,7 @@ public class MainActivity extends AppCompatActivity
     public static void addToTaskList(Task inputTask)
     {
         mainTaskList.add(inputTask);
+        ((ArrayAdapter)taskViewList).notifyDataSetChanged();
     }
 
     @Override
