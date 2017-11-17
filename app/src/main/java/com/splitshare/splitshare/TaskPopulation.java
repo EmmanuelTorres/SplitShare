@@ -26,7 +26,7 @@ public class TaskPopulation
                 for(int i = 0; i< 30; i++){
                     if(limit == 5){break;}
                    //if there is an event for this day
-                   if(a.getCycle().isOnDayWithStart(Calendar.getInstance(), currentDay)){
+                   if(a.getCycle().isOnDayWithStart(a.getStartDate(), currentDay)){
                        limit++;
                        //Create dumb task
                         SplitShareApp.populatedTask.add( a.createDumbTask(currentDay));
