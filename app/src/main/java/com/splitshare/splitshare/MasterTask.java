@@ -13,10 +13,10 @@ public class MasterTask
 {
     private String title;
     private String description;
-    private int type;
+    private String category;
     private Calendar startDate;
     private Calendar endDate;
-    private String groupId;
+    private Group group;
     private List<User> activeUsers;
     // TODO: List<double> paymentDistribution;
     // and paymentAmount is the sum total
@@ -34,15 +34,20 @@ public class MasterTask
     {
         this.title = title;
         this.description = description;
-        this.type = type;
+        this.category = category;
         setStartDate(startDate);
         setEndDate(endDate);
-        this.groupId = groupId;
+        this.group = group;
         this.activeUsers = activeUsers;
         this.paymentAmount = paymentAmount;
         this.cycle = cycle;
     }
 
+    public void addToDatabase()
+    {
+        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("groups/" + group.getGroupTimestamp() + "/GroupTasks/" + title + "/");
+        taskReference.setValue(this);
+    }
 
     public String getTitle()
     {
@@ -64,14 +69,14 @@ public class MasterTask
         this.description = description;
     }
 
-    public int getType()
+    public String getCategory()
     {
-        return type;
+        return category;
     }
 
-    public void setType(int type)
+    public void setCategory(String category)
     {
-        this.type = type;
+        this.category = category;
     }
 
     public Calendar getStartDate()
@@ -104,14 +109,14 @@ public class MasterTask
         this.endDate.set(Calendar.MILLISECOND, 0);
     }
 
-    public String getGroupId()
+    public Group getGroup()
     {
-        return groupId;
+        return group;
     }
 
-    public void setGroupId(String groupId)
+    public void setGroup(Group group)
     {
-        this.groupId = groupId;
+        this.group = group;
     }
 
     public List<User> getActiveUsers()
@@ -133,6 +138,23 @@ public class MasterTask
     {
         this.paymentAmount = paymentAmount;
     }
+
+    //this is for task population and convience
+    public Task createDumbTask(Calendar date){
+        return new Task(date, this.title,this.category, "", this.group);
+    }
+
+//    Task(Calendar d, String t, String c, String am, Group g)
+//    {
+//        date = d;
+//        title = t;
+//        category = c;
+//        assignedMember = am;
+//        group = g;
+//        costDue = false;
+//        feeCollectionMember = "";
+//        fee = 0.0;
+//    }
 
     public Cycle getCycle()
     {
