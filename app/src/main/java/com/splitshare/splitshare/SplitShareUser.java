@@ -76,4 +76,41 @@ public class SplitShareUser extends User
             public void onCancelled(DatabaseError databaseError) {}
         });
     }
+
+    /*
+     * Adds all the groups belonging to the SplitShareUser to the UsersGroups list inside SplitShareApp
+     */
+    public void getGroups()
+    {
+        if (super.getAccountReference() == null)
+        {
+            // Log the mistake for easy debugging
+            Log.d("User-CreateAccount", "The database reference was null");
+
+            return;
+        }
+
+        super.getAccountReference().child("Groups").addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                if (dataSnapshot.exists())
+                {
+                    for (DataSnapshot userGroup : dataSnapshot.getChildren())
+                    {
+                        String groupTimestamp = userGroup.getKey();
+                        String groupName = userGroup.getValue().toString();
+
+                        Log.d("User-GetGroups", "Adding the group " + groupName + " to UsersGroups");
+
+                        SplitShareApp.usersGroups.add(new Group(groupTimestamp, groupName));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
 }
