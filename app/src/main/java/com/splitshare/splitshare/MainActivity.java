@@ -123,6 +123,10 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(this, GroupCreationActivity.class));
     }
 
+    private void openGroupEditor() {
+        startActivity(new Intent(this, GroupEditingActivity.class));
+    }
+
     public static void addToTaskList(Task inputTask)
     {
         mainTaskList.add(inputTask);
@@ -169,19 +173,18 @@ public class MainActivity extends AppCompatActivity
         {
             openGroupCreator();
         }
-//        else if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
+        else
+        {
+            for (Group g : usersGroups)
+            {
+                if(g.getGroupName().equals(item.getTitle()))
+                {
+                    GroupEditingActivity.forEditing = g;
+                    //System.out.println(item.getTitle());
+                }
+            }
+            openGroupEditor();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
