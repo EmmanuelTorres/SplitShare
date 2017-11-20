@@ -40,6 +40,10 @@
             android:name=".DateSelectionActivity"
             android:label="Select a day">
         </activity>
+        <activity
+            android:name=".TaskCycleSelectionActivity"
+            android:label="Select a cycle type">
+        </activity>
     </application>
 
 </manifest>

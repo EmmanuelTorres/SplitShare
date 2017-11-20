@@ -13,9 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -27,15 +30,29 @@ import static com.splitshare.splitshare.SplitShareApp.usersGroups;
 public class TaskCreationActivity extends AppCompatActivity {
     public static SimpleDate startDate;
     public static SimpleDate endDate;
+    public static int cycleType = 0;
     static final int SET_START_DATE_REQ = 1;
     static final int SET_END_DATE_REQ = 2;
+    static final int SET_CYCLE_TYPE_REQ = 3;
     private boolean startDateIsSet = false;
     private boolean endDateIsSet = false;
     private boolean isTaskReady = false;
-    private Button finishButton;
+    private boolean isTaskForever = false;
     public List<User> activeUsers = null;
     public Cycle cycle = new Cycle();
     public static Activity taskCreationActivityRef;
+
+
+    // view elements relevant to Cycle specification
+    private LinearLayout cycleWeekDetails;
+    private LinearLayout doEveryPeriodLayout;
+    private TextView textDoEveryDiscriptor;
+    private Button endDateButton;
+    private CheckBox repeatForeverBox;
+
+    EditText taskTitle;
+    EditText doEveryTextbox;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,33 +64,92 @@ public class TaskCreationActivity extends AppCompatActivity {
         ArrayAdapter<Group> groupListAdapter = new ArrayAdapter<Group>(this, android.R.layout.simple_spinner_dropdown_item, usersGroups);
         groupSpinner.setAdapter(groupListAdapter);
 
-        finishButton = (Button) findViewById(R.id.button_finish);
+        taskTitle = findViewById(R.id.TitleEntry);
+        doEveryTextbox = findViewById(R.id.RepeatEveryEntry);
+
+        // various things relevant to cycle details
+        cycleWeekDetails = findViewById(R.id.daysOfWeekBoxes);
+        doEveryPeriodLayout = findViewById(R.id.doEveryPeriod);
+        textDoEveryDiscriptor = findViewById(R.id.textDoEveryDiscriptor);
+        endDateButton = (Button) findViewById(R.id.endDateSetButton);
+        endDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { openDateSelector(SET_END_DATE_REQ); }
+        });
+
+        repeatForeverBox = (CheckBox) findViewById(R.id.repeatForeverCheckbox);
+        repeatForeverBox.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    endDateButton.setVisibility(View.GONE);
+                    isTaskForever = true;
+                } else {
+                    endDateButton.setVisibility(View.VISIBLE);
+                    isTaskForever = false;
+                }
+            }
+        });
+        clearDetailOptions();
+
+        Button cycleTypeSetter = (Button) findViewById(R.id.setCycleButton);
+        cycleTypeSetter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(new Intent(taskCreationActivityRef, TaskCycleSelectionActivity.class), SET_CYCLE_TYPE_REQ);
+            }
+        });
+
+        Button finishButton = (Button) findViewById(R.id.button_finish);
 
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isTaskReady) {
-                    outputStatus();
-                    return;
-                }
-                EditText titleDesc = findViewById(R.id.TitleEntry);
-                String title = titleDesc.getText().toString();
+                String title = taskTitle.getText().toString();
 
                 EditText descriptionDesc = findViewById(R.id.DescEntry);
                 String description = descriptionDesc.getText().toString();
 
+                if (!checkStatus()) {
+                    return;
+                }
+
                 int pos = ((Spinner)findViewById(R.id.spinner)).getSelectedItemPosition();
                 Group group = usersGroups.get(pos);
+                if (cycleType  == 0) {
+                    cycle = new Cycle();
+                } else if (cycleType == 1) {
+                    int spacing = Integer.parseInt(doEveryTextbox.getText().toString());
+                    cycle = new Cycle(spacing);
+                } else if (cycleType == 2) {
+                    int spacing = Integer.parseInt(doEveryTextbox.getText().toString());
+                    boolean[] oneWeek = new boolean[7];
+                    CheckBox cbw = findViewById(R.id.checkBoxSun);
+                    oneWeek[0] = cbw.isChecked();
+                    cbw = findViewById(R.id.checkBoxMon);
+                    oneWeek[1] = cbw.isChecked();
+                    cbw = findViewById(R.id.checkBoxTues);
+                    oneWeek[2] = cbw.isChecked();
+                    cbw = findViewById(R.id.checkBoxWed);
+                    oneWeek[3] = cbw.isChecked();
+                    cbw = findViewById(R.id.checkBoxThurs);
+                    oneWeek[4] = cbw.isChecked();
+                    cbw = findViewById(R.id.checkBoxFri);
+                    oneWeek[5] = cbw.isChecked();
+                    cbw = findViewById(R.id.checkBoxSat);
+                    oneWeek[6] = cbw.isChecked();
 
-                Task newTask = new Task(startDate.toCalendar(),title,"category?",SplitShareApp.acct.getDisplayName(),group);
-                MainActivity.addToTaskList(newTask);
+                    cycle = new Cycle(oneWeek, spacing);
+                } else if (cycleType == 3) {
+                    int spacing = Integer.parseInt(doEveryTextbox.getText().toString());
+                    cycle = new Cycle(startDate.day, spacing);
+                } else if (cycleType == 4) {
+                    cycle = new Cycle(startDate.month, startDate.year, true);
+                }
+                if (cycleType == 0 || isTaskForever) {
+                    //TODO: for infinite tasks, what should endDate be?
+                    endDate = startDate;
+                }
 
-                boolean[] oneWeek = {false, true, false, true, false, true, false};
-                cycle = new Cycle(startDate.toCalendar().get(Calendar.DAY_OF_WEEK), startDate.toCalendar().get(Calendar.WEEK_OF_MONTH), 2);
-
-                //MasterTask(String title, String description, int type, Calendar startDate,
-                //Calendar endDate, long groupId, List<User> activeUsers, double paymentAmount,
-                //Cycle cycle)
                 if (usersGroups.size() > 0) {
                     StoredMasterTask newMasterTask = new StoredMasterTask(title, description, "Chores", startDate, endDate, usersGroups.get(0), activeUsers, false, 123, cycle);
                     String mTaskID = title + (int) (Math.random() * 100);
@@ -98,13 +174,6 @@ public class TaskCreationActivity extends AppCompatActivity {
         beginDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { openDateSelector(SET_START_DATE_REQ); }
-        });
-
-
-        Button endDateButton = (Button) findViewById(R.id.endDateSetButton);
-        endDateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { openDateSelector(SET_END_DATE_REQ); }
         });
     }
 
@@ -135,16 +204,70 @@ public class TaskCreationActivity extends AppCompatActivity {
                         data.getIntExtra("YEAR", 1999));
                 endDateIsSet = true;
             }
+            if (requestCode == SET_CYCLE_TYPE_REQ) {
+                cycleType = data.getIntExtra("CYCLE_TYPE", 0);
+                updateUIforType(cycleType);
+            }
             if (startDateIsSet && endDateIsSet) {
                 isTaskReady = true;
             }
         }
     }
 
-    void outputStatus() {
-        if (!startDateIsSet)
+    boolean checkStatus() {
+        if (!startDateIsSet) {
             Toast.makeText(this, "No start date set", Toast.LENGTH_LONG).show();
-        else if (!endDateIsSet)
+            return false;
+        }
+        else if (!endDateIsSet && !isTaskForever && cycleType != 0) {
             Toast.makeText(this, "No end date set", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if (taskTitle.getText().toString().length() == 0) {
+            Toast.makeText(this, "Make sure you've given the task a name!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if (Integer.parseInt(doEveryTextbox.getText().toString()) == 0) {
+            Toast.makeText(this, "Can't do every 0 times!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    void clearDetailOptions() {
+        cycleWeekDetails.setVisibility(View.GONE);
+        repeatForeverBox.setVisibility(View.GONE);
+        doEveryPeriodLayout.setVisibility(View.GONE);
+        if (repeatForeverBox.isChecked()) {
+            endDateButton.setVisibility(View.GONE);
+        } else {
+            endDateButton.setVisibility(View.VISIBLE);
+        }
+
+    }
+    void updateUIforType(int t) {
+        clearDetailOptions();
+        if (t == 0) {
+            endDateButton.setVisibility(View.GONE);
+        } else if (t == 1) {
+            doEveryPeriodLayout.setVisibility(View.VISIBLE);
+            repeatForeverBox.setVisibility(View.VISIBLE);
+            textDoEveryDiscriptor.setText("day(s)");
+        } else if (t == 2) {
+            doEveryPeriodLayout.setVisibility(View.VISIBLE);
+            repeatForeverBox.setVisibility(View.VISIBLE);
+            textDoEveryDiscriptor.setText("week(s)");
+            cycleWeekDetails.setVisibility(View.VISIBLE);
+        } else if (t == 3) {
+            doEveryPeriodLayout.setVisibility(View.VISIBLE);
+            repeatForeverBox.setVisibility(View.VISIBLE);
+            textDoEveryDiscriptor.setText("month(s)");
+        } else if (t == 4) {
+            doEveryPeriodLayout.setVisibility(View.VISIBLE);
+            repeatForeverBox.setVisibility(View.VISIBLE);
+            textDoEveryDiscriptor.setText("year(s)");
+        }
+
+
     }
 }

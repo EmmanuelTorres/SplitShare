@@ -45,24 +45,33 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Title"
-                android:layout_margin="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
                 android:inputType="text"
                 android:singleLine="true" />
 
             <EditText
-                android:id="@+id/editText4"
+                android:id="@+id/CategoryEntry"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
                 android:ems="10"
-                android:hint="Location"
+                android:hint="Category"
                 android:inputType="text" />
 
             <EditText
                 android:id="@+id/DescEntry"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
                 android:ems="10"
                 android:hint="Description"
                 android:inputType="textMultiLine" />
@@ -72,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="0dp"
@@ -88,11 +97,20 @@
                 android:hint="Select a group"
                 android:entries="@array/temp_groups_array"/>
 
+            <Button
+                android:id="@+id/selectApplicableMembers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Select applicable members" />
+
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="0dp"
@@ -100,47 +118,111 @@
                 android:textAlignment="center"
                 android:textSize="18sp" />
 
-            <LinearLayout
-                android:layout_margin="16dp"
+            <Button
+                android:id="@+id/setCycleButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Select cycle method" />
 
-                <CheckBox
-                    android:id="@+id/checkBox4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="M" />
+        <LinearLayout
+            android:id="@+id/doEveryPeriod"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/textDoEvery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Do every "
+                android:textAlignment="center"
+                android:textSize="18sp"/>
+            <EditText
+                android:id="@+id/RepeatEveryEntry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:ems="4"
+                android:inputType="number"/>
 
-                <CheckBox
-                    android:id="@+id/checkBox5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="T" />
+            <TextView
+                android:id="@+id/textDoEveryDiscriptor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Day(s)"
+                android:textAlignment="center"
+                android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/daysOfWeekBoxes"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-                <CheckBox
-                    android:id="@+id/checkBox6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="W" />
+            <CheckBox
+                android:id="@+id/checkBoxSun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="U" />
 
-                <CheckBox
-                    android:id="@+id/checkBox7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="R" />
+            <CheckBox
+                android:id="@+id/checkBoxMon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="M" />
 
-                <CheckBox
-                    android:id="@+id/checkBox8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="F" />
-            </LinearLayout>
+            <CheckBox
+                android:id="@+id/checkBoxTues"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="T" />
+
+            <CheckBox
+                android:id="@+id/checkBoxWed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="W" />
+
+            <CheckBox
+                android:id="@+id/checkBoxThurs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="R" />
+
+            <CheckBox
+                android:id="@+id/checkBoxFri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="F" />
+
+            <CheckBox
+                android:id="@+id/checkBoxSat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="S" />
+        </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/repeatForeverCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Repeat indefinitely" />
 
             <Button
                 android:id="@+id/startDateSetButton"
@@ -151,6 +233,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:text="Set start date" />
+
             <Button
                 android:id="@+id/endDateSetButton"
                 android:layout_width="match_parent"

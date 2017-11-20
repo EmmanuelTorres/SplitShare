@@ -31,7 +31,8 @@ public class TaskPopulation
                 for(int i = 0; i< 100; i++){
                     if(limit == 20){break;}
                    //if there is an event for this day
-                   if(a.getCycle().isOnDayWithStart(a.getStartDate(), currentDay)){
+                   if(a.getCycle().isOnDayWithStart(a.getStartDate(), currentDay) &&
+                           a.getCycle().numOcurrencesSinceStart(a.getStartDate(), currentDay) % 3 == 0){
                        if (a.getEndDate().before(currentDay))
                            break;
                        limit++;
