@@ -46,7 +46,10 @@ public class GroupEditingActivity extends AppCompatActivity {
                 EditText newUserText = findViewById(R.id.addUserField);
                 String newUserString = newUserText.getText().toString();
 
-                forEditing.addMember(newUserString,newUserString); //TODO: Figure out what the second argument is supposed to be
+                User newUser = new User(newUserString);
+                newUser.addToGroup(forEditing.getGroupTimestamp(),forEditing.getGroupName());
+
+                forEditing.addMember(newUserString,newUser.getUserName()); //TODO: Figure out what the second argument is supposed to be
 
                 closeGroupCreator();
             }
