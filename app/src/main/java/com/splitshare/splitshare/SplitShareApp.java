@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 /**
  * Created by armando on 10/9/17.
@@ -22,5 +23,5 @@ public class SplitShareApp extends Application {
     public static SplitShareUser splitShareUser;
     public static ArrayList<Group> usersGroups = new ArrayList<Group>();
     public static ArrayList<MasterTask> usersMasterTasks = new ArrayList<MasterTask>();
-    public static ArrayList<Task> populatedTask = new ArrayList<Task>();
+    public static PriorityQueue<Task> populatedTask = new PriorityQueue<Task>();
 }

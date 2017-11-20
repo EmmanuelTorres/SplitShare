@@ -12,7 +12,7 @@ import static java.util.Calendar.MONTH;
  * Created by dklug on 10/9/17.
  */
 
-public class Task {
+public class Task implements Comparable{
     public Calendar date;
     public String title;
     public String category;
@@ -74,5 +74,18 @@ public class Task {
         String month = String.format("%02d", date.get(Calendar.MONTH) + 1); // +1 because Calendars ammirite?
         String year = String.format("%4d", date.get(Calendar.YEAR));
         return month + "/" + day + "/" + year;
+    }
+
+    public int compareTo(Object o) throws ClassCastException{
+        if (!(o instanceof Task))
+            throw new ClassCastException("Must compare Task with Task!");
+        Task other = (Task) o;
+        if (other.date.getTimeInMillis() > date.getTimeInMillis()) {
+            return -1;
+        } else if (other.date.getTimeInMillis() < date.getTimeInMillis()) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

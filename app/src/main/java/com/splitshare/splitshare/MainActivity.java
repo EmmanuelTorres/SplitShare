@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -133,10 +134,10 @@ public class MainActivity extends AppCompatActivity
         ((ArrayAdapter)taskViewList).notifyDataSetChanged();
     }
 
-    public static void addAllToTaskList(ArrayList<Task> tasks) {
+    public static void addAllToTaskList(PriorityQueue<Task> tasks) {
         mainTaskList.clear();
-        for(Task a : tasks) {
-            mainTaskList.add(a);
+        while (! tasks.isEmpty()) {
+            mainTaskList.add(tasks.poll());
         }
         tasks.clear();
         ((ArrayAdapter)taskViewList).notifyDataSetChanged();
