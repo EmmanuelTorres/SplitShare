@@ -36,12 +36,18 @@ public class MainActivity extends AppCompatActivity
     public static Activity mainActRef;
     public static List<Task> mainTaskList = new ArrayList<Task>();
     public static ListAdapter taskViewList;
+    private NavigationView navView;
+    public static Menu navMenu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainactivity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        navView = (NavigationView) findViewById(R.id.nav_view);
+        navMenu = navView.getMenu();
+        navMenu = navMenu.findItem(R.id.groupSubMenu).getSubMenu();
 
         // Establishes a global connection to the
         SplitShareApp.firebaseDatabase = FirebaseDatabase.getInstance();
@@ -117,6 +123,10 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(this, GroupCreationActivity.class));
     }
 
+    private void openGroupEditor() {
+        startActivity(new Intent(this, GroupEditingActivity.class));
+    }
+
     public static void addToTaskList(Task inputTask)
     {
         mainTaskList.add(inputTask);
@@ -163,18 +173,17 @@ public class MainActivity extends AppCompatActivity
         {
             openGroupCreator();
         }
-        else if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        else
+        {
+            for (Group g : usersGroups)
+            {
+                if(g.getGroupName().equals(item.getTitle()))
+                {
+                    GroupEditingActivity.forEditing = g;
+                    //System.out.println(item.getTitle());
+                }
+            }
+            openGroupEditor();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

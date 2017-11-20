@@ -37,6 +37,10 @@
             android:label="Create Group">
         </activity>
         <activity
+            android:name=".GroupEditingActivity"
+            android:label="Edit Group">
+        </activity>
+        <activity
             android:name=".DateSelectionActivity"
             android:label="Select a day">
         </activity>

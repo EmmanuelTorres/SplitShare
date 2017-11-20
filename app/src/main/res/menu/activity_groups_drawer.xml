@@ -2,27 +2,27 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Groups">
+    <item android:title="Groups" android:id="@+id/groupSubMenu">
         <menu>
             <item
                 android:id="@+id/add_group"
                 android:title="Add Group" />
-            <item
-                android:id="@+id/nav_camera"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="Photography Group" />
-            <item
-                android:id="@+id/nav_gallery"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="Art Gallery Group" />
-            <item
-                android:id="@+id/nav_slideshow"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="Bingewatch Krew" />
-            <item
-                android:id="@+id/nav_manage"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="Da Grate Builderz" />
+            <!--<item-->
+                <!--android:id="@+id/nav_camera"-->
+                <!--android:icon="@drawable/ic_menu_camera"-->
+                <!--android:title="Photography Group" />-->
+            <!--<item-->
+                <!--android:id="@+id/nav_gallery"-->
+                <!--android:icon="@drawable/ic_menu_gallery"-->
+                <!--android:title="Art Gallery Group" />-->
+            <!--<item-->
+                <!--android:id="@+id/nav_slideshow"-->
+                <!--android:icon="@drawable/ic_menu_slideshow"-->
+                <!--android:title="Bingewatch Krew" />-->
+            <!--<item-->
+                <!--android:id="@+id/nav_manage"-->
+                <!--android:icon="@drawable/ic_menu_manage"-->
+                <!--android:title="Da Grate Builderz" />-->
         </menu>
     </item>
     <item android:title="View">

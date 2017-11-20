@@ -104,6 +104,8 @@ public class SplitShareUser extends User
 
                         Log.d("User-GetGroups", "Adding the group " + groupName + " to UsersGroups");
 
+                        MainActivity.navMenu.add(0,0,0,groupName);
+
                         SplitShareApp.usersGroups.add(new Group(groupTimestamp, groupName));
                     }
                 }
