@@ -36,18 +36,17 @@ public class GroupEditingActivity extends AppCompatActivity {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText titleDesc = findViewById(R.id.TitleEntry);
-                String title = titleDesc.getText().toString();
+//                EditText titleDesc = findViewById(R.id.TitleEntry);
+//                String title = titleDesc.getText().toString();
 
 //                EditText descriptionDesc = findViewById(R.id.DescEntry);
 //                String description = descriptionDesc.getText().toString();
 
-                Group newGroup = new Group(title);
-                newGroup.createGroup();
 
-//                if (usersGroups.size() > 0) {
-//
-//                }
+                EditText newUserText = findViewById(R.id.addUserField);
+                String newUserString = newUserText.getText().toString();
+
+                forEditing.addMember(newUserString,newUserString); //TODO: Figure out what the second argument is supposed to be
 
                 closeGroupCreator();
             }

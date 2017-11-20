@@ -46,6 +46,15 @@
                 android:text="Editing Group: " />
 
             <EditText
+                android:id="@+id/addUserField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:ems="10"
+                android:hint="Add a New User Here"
+                android:inputType="text" />
+
+            <EditText
                 android:id="@+id/editText4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
