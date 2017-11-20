@@ -183,7 +183,6 @@ public class TaskCreationActivity extends AppCompatActivity {
     }
 
     private void closeTaskCreator(){
-        TaskPopulation.populate();
         finish();
     }
     private void openDateSelector(int request) { startActivityForResult(new Intent(this, DateSelectionActivity.class), request); }

@@ -62,20 +62,6 @@ public class MainActivity extends AppCompatActivity
         splitShareUser.createAccount();
         splitShareUser.getGroups();
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                splitShareUser.getTasks();
-            }
-        }, 6000);
-
-        if (usersGroups.size() > 0)
-            Toast.makeText(this, "Member of " +
-                usersGroups.size() + " groups!" , Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(this, "No groups!", Toast.LENGTH_LONG).show();
-
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,11 +93,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
-        //mainTaskList.add(new Task());
-        //mainTaskList.add(new Task());
-        //mainTaskList.add(new Task());
         ListView mainTaskView = (ListView) findViewById(R.id.mainListView);
         mainTaskView.setAdapter(taskViewList);
     }
@@ -141,6 +122,10 @@ public class MainActivity extends AppCompatActivity
         }
         tasks.clear();
         ((ArrayAdapter)taskViewList).notifyDataSetChanged();
+    }
+
+    public static void scheduleUIupdate() {
+        TaskPopulation.populate();
     }
 
     @Override

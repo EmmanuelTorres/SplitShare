@@ -108,6 +108,8 @@ public class SplitShareUser extends User
 
                         SplitShareApp.usersGroups.add(new Group(groupTimestamp, groupName));
                     }
+
+                    SplitShareApp.splitShareUser.getTasks();
                 }
             }
 
@@ -139,6 +141,7 @@ public class SplitShareUser extends User
 
                             SplitShareApp.usersMasterTasks.add(task.toMasterTask());
                         }
+                        MainActivity.scheduleUIupdate();
                     }
                 }
 
