@@ -34,7 +34,7 @@ public class TaskPopulation
                    //if there is an event for this day
                    if(a.getCycle().isOnDayWithStart(a.getStartDate(), currentDay) /*&&
                            a.getActiveUsers().get(a.getCycle().numOcurrencesSinceStart(a.getStartDate(), currentDay) % a.getActiveUsers().size()).getUserId() == SplitShareApp.splitShareUser.getUserId()
-                           */){ //TODO: this will work when we can have a list of members in a group
+                           */){ //TODO: this will work when we can have a list of members in a MasterTask
                        if (a.getEndDate().before(currentDay))
                            break;
                        limit++;
