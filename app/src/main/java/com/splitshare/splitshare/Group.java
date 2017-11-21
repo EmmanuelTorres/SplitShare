@@ -82,21 +82,50 @@ public class Group
         groupsReference.child("GroupMembers").setValue(groupEntries);
 
         // Add this group to the user's id
-        SplitShareApp.splitShareUser.addToGroup(groupTimestamp, groupName);
+        completeAddMember(SplitShareApp.splitShareUser.getUserId());
     }
 
-    /*
-     * Adds a User to the "GroupMembers" section of the Group
-     */
-    public void addMember(final String userIdToAdd, final String nameToAdd)
+    public void completeAddMember(String ID)
     {
-        // Creates a new object that references the Firebase database
-        DatabaseReference groupsReference = SplitShareApp.firebaseDatabase.getReference("groups/" + groupTimestamp);
+        // Variables need to be final to be used inside anonymous inner classes
+        final String userId = ID;
 
-        Log.d("Group-AddMember", "Adding member " + nameToAdd + " to group " + groupName);
-        groupsReference.child("GroupMembers").child(userIdToAdd).setValue(nameToAdd);
+        final DatabaseReference accountReference = SplitShareApp.firebaseDatabase.getReference("users/" + userId);
+
+        if (accountReference == null)
+        {
+            // Log the mistake for easy debugging
+            Log.d("Group-CompleteAddMember", "The database reference was null");
+
+            return;
+        }
+
+        // Attach a listener to the reference that points to Users/UserId/
+        accountReference.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                if (!dataSnapshot.exists())
+                {
+                    Log.d("Group-CompleteAddMember", "User doesn't exist, can't add to group.");
+                }
+                else
+                {
+                    // add group to user's list of groups
+                    accountReference.child("Groups").child(groupTimestamp).setValue(groupName);
+                    Log.d("Group-CompleteAddMember", "The user " + userId + " successfully added to group " + groupName);
+
+                    // add to actual group
+                    DatabaseReference groupsReference = SplitShareApp.firebaseDatabase.getReference("groups/" + groupTimestamp);
+                    groupsReference.child("GroupMembers").child(userId).setValue(dataSnapshot.child("Name").getValue());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
-
     // Removes a member from a group
     public void removeMember(final String userIdToRemove)
     {
@@ -136,7 +165,7 @@ public class Group
                     {
                         Log.d("Group-GetUsers", groupMember.getKey());
 
-                        groupUsers.add(new User(groupMember.getKey()));
+                        groupUsers.add(new User(groupMember.getKey(), (String) groupMember.getValue()));
                     }
                 }
             }

@@ -26,6 +26,16 @@ public class User
         this.userEmail = accountReference.child("Email").toString();
     }
 
+    // Sets the data and initiates an accountReference
+    public User(String userId, String name)
+    {
+        this.accountReference = SplitShareApp.firebaseDatabase.getReference("users/" + userId);
+
+        this.userId = userId;
+        this.userName = name;
+        this.userEmail = "nobody@broken.com";
+    }
+
     public User(String userId, String userName, String userEmail)
     {
         this.accountReference = SplitShareApp.firebaseDatabase.getReference("users/" + userId);
@@ -55,27 +65,6 @@ public class User
         return userEmail;
     }
 
-    /*
-     * Adds a group to the user's "Groups" section inside of Firebase
-     * Here's the crazy part: we can't check for duplicates but it technically doesn't
-     * matter, and Firebase can sometimes tell its a duplicate and not change anything
-     */
-    public void addToGroup(final String groupTimestamp, final String groupName)
-    {
-        // If the database reference is null, the connection to the server isn't good
-        if (accountReference == null)
-        {
-            // Log the mistake for easy debugging
-            Log.d("User-AddToGroup", "The database reference was null");
-
-            return;
-        }
-
-        // Adds a group timestamp:id value to the Groups part of the user's table
-        // Functionally replaces the commented code below
-        Log.d("User-AddToGroup", "Adding group " + groupName + " to user " + userName);
-        accountReference.child("Groups").child(groupTimestamp).setValue(groupName);
-    }
 
     /*
      * Removes a group from the user's "Groups" section inside of Firebase

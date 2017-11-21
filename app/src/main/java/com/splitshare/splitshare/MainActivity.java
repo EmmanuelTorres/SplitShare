@@ -53,8 +53,7 @@ public class MainActivity extends AppCompatActivity
         // Establishes a global connection to the
         SplitShareApp.firebaseDatabase = FirebaseDatabase.getInstance();
         SplitShareApp.splitShareUser = new SplitShareUser();
-        //usersGroups = new ArrayList<Group>();
-        //splitShareUser = new SplitShareUser();
+
         // used so things can externally update the agenda
         mainActRef = this;
         taskViewList = new TaskAdapter(mainActRef, mainTaskList);
