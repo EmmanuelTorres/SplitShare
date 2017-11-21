@@ -97,6 +97,8 @@ public class SplitShareUser extends User
             {
                 if (dataSnapshot.exists())
                 {
+                    SplitShareApp.usersGroups.clear();
+                    MainActivity.navMenu.clear();
                     for (DataSnapshot userGroup : dataSnapshot.getChildren())
                     {
                         String groupTimestamp = userGroup.getKey();
@@ -108,6 +110,7 @@ public class SplitShareUser extends User
 
                         SplitShareApp.usersGroups.add(new Group(groupTimestamp, groupName));
                     }
+                    MainActivity.navMenu.add(0,0,0,"Add Group");
 
                     SplitShareApp.splitShareUser.getTasks();
                 }
@@ -120,6 +123,7 @@ public class SplitShareUser extends User
 
     public void getTasks()
     {
+        SplitShareApp.usersMasterTasks.clear();
         // The Groups belonging to a user
         for (Group currentGroup : SplitShareApp.usersGroups)
         {

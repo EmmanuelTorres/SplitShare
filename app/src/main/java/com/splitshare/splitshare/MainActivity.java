@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity
     public static List<Task> mainTaskList = new ArrayList<Task>();
     public static ListAdapter taskViewList;
     private NavigationView navView;
+    public static SwipeRefreshLayout swipeToRefresh;
     public static Menu navMenu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,15 @@ public class MainActivity extends AppCompatActivity
         navView = (NavigationView) findViewById(R.id.nav_view);
         navMenu = navView.getMenu();
         navMenu = navMenu.findItem(R.id.groupSubMenu).getSubMenu();
+
+        swipeToRefresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshAll();
+            }
+
+        });
 
         // Establishes a global connection to the
         SplitShareApp.firebaseDatabase = FirebaseDatabase.getInstance();
@@ -126,6 +137,7 @@ public class MainActivity extends AppCompatActivity
     public static void scheduleUIupdate() {
         TaskPopulation.populate();
     }
+    public static void refreshAll() { splitShareUser.getGroups(); }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,7 +166,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id == R.id.add_group)
+
+        // TODO: handle other menu options!
+        if (item.getTitle().equals("Add Group"))
         {
             openGroupCreator();
         }

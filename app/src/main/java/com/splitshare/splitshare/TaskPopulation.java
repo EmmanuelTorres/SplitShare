@@ -12,6 +12,7 @@ public class TaskPopulation
 {
     public static void populate()
     {
+        SplitShareApp.populatedTask.clear();
         for(MasterTask a : SplitShareApp.usersMasterTasks){
             Calendar today = Calendar.getInstance();
 
@@ -48,6 +49,7 @@ public class TaskPopulation
         }
 
         MainActivity.addAllToTaskList(SplitShareApp.populatedTask);
+        MainActivity.swipeToRefresh.setRefreshing(false);
     }
 
 }

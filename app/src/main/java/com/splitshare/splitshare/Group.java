@@ -85,6 +85,7 @@ public class Group
         completeAddMember(SplitShareApp.splitShareUser.getUserId());
     }
 
+    // add someone to a group using their unique ID
     public void completeAddMember(String ID)
     {
         // Variables need to be final to be used inside anonymous inner classes
