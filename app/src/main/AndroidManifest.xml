@@ -48,6 +48,11 @@
             android:name=".TaskCycleSelectionActivity"
             android:label="Select a cycle type">
         </activity>
+
+        <activity
+            android:name=".AddUserToListActivity"
+            android:label="Select applicable members">
+        </activity>
     </application>
 
 </manifest>

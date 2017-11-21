@@ -112,8 +112,8 @@ public class SplitShareUser extends User
                     }
                     MainActivity.navMenu.add(0,0,0,"Add Group");
 
-                    SplitShareApp.splitShareUser.getTasks();
                 }
+                SplitShareApp.splitShareUser.getTasks();
             }
 
             @Override
@@ -145,8 +145,8 @@ public class SplitShareUser extends User
 
                             SplitShareApp.usersMasterTasks.add(task.toMasterTask());
                         }
-                        MainActivity.scheduleUIupdate();
                     }
+                    MainActivity.scheduleUIupdate();
                 }
 
                 @Override
