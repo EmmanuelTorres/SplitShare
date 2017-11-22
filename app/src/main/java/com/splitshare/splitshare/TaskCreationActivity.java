@@ -48,9 +48,10 @@ public class TaskCreationActivity extends AppCompatActivity {
     private boolean endDateIsSet = false;
     private boolean isTaskReady = false;
     private boolean isTaskForever = false;
-    public static List<User> activeUsers = new ArrayList<User>();
+    public static List<String> activeUsers = new ArrayList<String>();
     public Cycle cycle = new Cycle();
     public static Activity taskCreationActivityRef;
+    public static StoredMasterTask newMasterTask;
 
 
     // view elements relevant to Cycle specification
@@ -171,9 +172,8 @@ public class TaskCreationActivity extends AppCompatActivity {
                 }
 
                 if (usersGroups.size() > 0) {
-                    StoredMasterTask newMasterTask = new StoredMasterTask(title, description, "Chores", startDate, endDate, usersGroups.get(0), null, false, 123, cycle);
-                    String mTaskID = title + (int) (Math.random() * 100);
-                    System.out.println(mTaskID);
+                    Log.d("TaskCreate-newMastrTask", activeUsers.size() + activeUsers.get(0));
+                    newMasterTask = new StoredMasterTask(title, description, "Chores", startDate, endDate, usersGroups.get(0), activeUsers, false, 123, cycle);
                     newMasterTask.addToDatabase();
                 }
 
@@ -229,7 +229,8 @@ public class TaskCreationActivity extends AppCompatActivity {
             }
             if (requestCode == SET_MEMBERS_REQ) {
                 numUsers = data.getIntExtra("USERS_SELECTED", 0);
-                activeUsers = new ArrayList<User>(AddUserToListActivity.usersSelected);
+                for (User u : AddUserToListActivity.usersSelected)
+                    activeUsers.add(u.getUserId());
             }
             if (startDateIsSet && endDateIsSet) {
                 isTaskReady = true;
@@ -284,7 +285,7 @@ public class TaskCreationActivity extends AppCompatActivity {
                     // Loop through all the Users
                     for (DataSnapshot groupMember: groupMembers.getChildren())
                     {
-                        Log.d("Group-GetUsers", groupMember.getKey());
+                        Log.d("TaskCreate-MembrSelect", groupMember.getKey());
 
                         AddUserToListActivity.usersAvail.add(new User(groupMember.getKey(), (String) groupMember.getValue()));
                     }

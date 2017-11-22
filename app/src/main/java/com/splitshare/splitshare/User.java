@@ -10,11 +10,17 @@ public class User
     private DatabaseReference accountReference;
 
     // The unique userId of the user
-    private String userId;
+    public String userId;
     // The userName of the user
-    private String userName;
+    public String userName;
     // The unique userEmail of the user
     private String userEmail;
+
+    public User() {
+        this.userId = "0";
+        this.userName = "John Doe";
+        this.userEmail = "nobody@broken.com";
+    }
 
     // Sets the data and initiates an accountReference
     public User(String userId)

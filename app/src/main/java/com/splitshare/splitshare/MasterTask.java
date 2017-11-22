@@ -2,6 +2,7 @@ package com.splitshare.splitshare;
 
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class MasterTask
     private Calendar startDate;
     private Calendar endDate;
     private Group group;
-    private List<User> activeUsers;
+    private List<String> activeUsers;
     // TODO: List<double> paymentDistribution;
     // and paymentAmount is the sum total
     private double paymentAmount;
@@ -30,7 +31,7 @@ public class MasterTask
     }
 
     public MasterTask(String title, String description, String category, Calendar startDate,
-                      Calendar endDate, Group group, List<User> activeUsers, boolean costDue, double paymentAmount,
+                      Calendar endDate, Group group, List<String> activeUsers, boolean costDue, double paymentAmount,
                       Cycle cycle)
     {
         this.title = title;
@@ -39,7 +40,7 @@ public class MasterTask
         setStartDate(startDate);
         setEndDate(endDate);
         this.group = group;
-        this.activeUsers = activeUsers;
+        this.activeUsers = new ArrayList<String>(activeUsers);
         this.costDue = costDue;
         this.paymentAmount = paymentAmount;
         this.cycle = cycle;
@@ -121,12 +122,12 @@ public class MasterTask
         this.group = group;
     }
 
-    public List<User> getActiveUsers()
+    public List<String> getActiveUsers()
     {
         return activeUsers;
     }
 
-    public void setActiveUsers(List<User> activeUsers)
+    public void setActiveUsers(List<String> activeUsers)
     {
         this.activeUsers = activeUsers;
     }

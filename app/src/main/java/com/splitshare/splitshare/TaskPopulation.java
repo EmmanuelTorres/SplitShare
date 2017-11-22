@@ -32,14 +32,18 @@ public class TaskPopulation
                 for(int i = 0; i< 100; i++){
                     if(limit == 20){break;}
                    //if there is an event for this day
-                   if(a.getCycle().isOnDayWithStart(a.getStartDate(), currentDay) /*&&
-                           a.getActiveUsers().get(a.getCycle().numOcurrencesSinceStart(a.getStartDate(), currentDay) % a.getActiveUsers().size()).getUserId() == SplitShareApp.splitShareUser.getUserId()
-                           */){ //TODO: this will work when we can have a list of members in a MasterTask
-                       if (a.getEndDate().before(currentDay))
-                           break;
-                       limit++;
-                       //Create dumb task
-                        SplitShareApp.populatedTask.add( a.createDumbTask((Calendar) currentDay.clone()));
+                   if(a.getCycle().isOnDayWithStart(a.getStartDate(), currentDay)){ //TODO: this will work when we can have a list of members in a MasterTask
+                       int whosTurn = a.getCycle().numOcurrencesSinceStart(a.getStartDate(), currentDay) % a.getActiveUsers().size();
+                       String user1 = a.getActiveUsers().get(whosTurn);
+                       // only add to agenda if this task is mine
+                       if (user1.compareTo(SplitShareApp.splitShareUser.getUserId()) == 0) {
+
+                           if (a.getEndDate().before(currentDay))
+                               break;
+                           limit++;
+                           //Create dumb task
+                           SplitShareApp.populatedTask.add(a.createDumbTask((Calendar) currentDay.clone()));
+                       }
 
                    }
                     currentDay.add(Calendar.DATE, 1);
