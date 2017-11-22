@@ -229,6 +229,7 @@ public class TaskCreationActivity extends AppCompatActivity {
             }
             if (requestCode == SET_MEMBERS_REQ) {
                 numUsers = data.getIntExtra("USERS_SELECTED", 0);
+                activeUsers.clear();
                 for (User u : AddUserToListActivity.usersSelected)
                     activeUsers.add(u.getUserId());
             }
