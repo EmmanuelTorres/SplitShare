@@ -173,7 +173,7 @@ public class TaskCreationActivity extends AppCompatActivity {
 
                 if (usersGroups.size() > 0) {
                     Log.d("TaskCreate-newMastrTask", activeUsers.size() + activeUsers.get(0));
-                    newMasterTask = new StoredMasterTask(title, description, "Chores", startDate, endDate, usersGroups.get(0), activeUsers, false, 123, cycle, isTaskForever);
+                    newMasterTask = new StoredMasterTask(title, description, "Chores", startDate, endDate, group, activeUsers, false, 123, cycle, isTaskForever);
                     newMasterTask.addToDatabase();
                 }
 
