@@ -18,9 +18,12 @@ import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,6 +121,10 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        // set text view so we can see user ID
+        TextView userIDView = navigationView.getHeaderView(0).findViewById(R.id.userIDTextView);
+        userIDView.setText(SplitShareApp.splitShareUser.getUserId());
     }
 
     private void openTaskCreator() {
