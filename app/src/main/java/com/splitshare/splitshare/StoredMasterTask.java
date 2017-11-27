@@ -23,6 +23,7 @@ public class StoredMasterTask {
     public double paymentAmount;
     public boolean costDue;
     public Cycle cycle;
+    public boolean isForever;
 
     public  StoredMasterTask() {
 
@@ -30,7 +31,7 @@ public class StoredMasterTask {
 
     public StoredMasterTask(String title, String description, String category, SimpleDate startDate,
                             SimpleDate endDate, Group group, List<String> activeUsers, boolean costDue, double paymentAmount,
-                            Cycle cycle)
+                            Cycle cycle, boolean forever)
     {
         this.title = title;
         this.description = description;
@@ -42,6 +43,7 @@ public class StoredMasterTask {
         this.costDue = costDue;
         this.paymentAmount = paymentAmount;
         this.cycle = cycle;
+        this.isForever = forever;
     }
 
     public void addToDatabase()
@@ -62,6 +64,6 @@ public class StoredMasterTask {
         ed.set(Calendar.YEAR, endDate.year);
 
         return new MasterTask(title, description, category, sd,
-                ed, group, activeUsers, costDue, paymentAmount, cycle);
+                ed, group, activeUsers, costDue, paymentAmount, cycle, isForever);
     }
 }

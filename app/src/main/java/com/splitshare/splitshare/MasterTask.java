@@ -24,6 +24,7 @@ public class MasterTask
     private double paymentAmount;
     public boolean costDue;
     private Cycle cycle;
+    private boolean isForever;
 
     public MasterTask() {
         startDate = Calendar.getInstance();
@@ -32,7 +33,7 @@ public class MasterTask
 
     public MasterTask(String title, String description, String category, Calendar startDate,
                       Calendar endDate, Group group, List<String> activeUsers, boolean costDue, double paymentAmount,
-                      Cycle cycle)
+                      Cycle cycle, boolean forever)
     {
         this.title = title;
         this.description = description;
@@ -44,6 +45,7 @@ public class MasterTask
         this.costDue = costDue;
         this.paymentAmount = paymentAmount;
         this.cycle = cycle;
+        this.isForever = forever;
     }
 
     public void addToDatabase()
@@ -147,6 +149,14 @@ public class MasterTask
         return new Task(date, this.title, this.category, "", this.group);
     }
 
+    public boolean isForever() {
+        return isForever;
+    }
+
+    public void setForever(boolean forever) {
+        isForever = forever;
+    }
+
 //    Task(Calendar d, String t, String c, String am, Group g)
 //    {
 //        date = d;
@@ -173,6 +183,6 @@ public class MasterTask
         SimpleDate sd = new SimpleDate(this.startDate.get(Calendar.MONTH), this.startDate.get(Calendar.DAY_OF_MONTH), this.startDate.get(Calendar.YEAR));
         SimpleDate ed = new SimpleDate(this.endDate.get(Calendar.MONTH), this.endDate.get(Calendar.DAY_OF_MONTH), this.endDate.get(Calendar.YEAR));
         return new StoredMasterTask(title, description, category, sd,
-                ed, group, activeUsers, costDue, paymentAmount, cycle);
+                ed, group, activeUsers, costDue, paymentAmount, cycle, isForever);
     }
 }
