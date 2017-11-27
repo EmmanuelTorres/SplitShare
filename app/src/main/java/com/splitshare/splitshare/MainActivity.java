@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     public static List<Task> mainTaskList = new ArrayList<Task>();
     public static ListAdapter taskViewList;
     private NavigationView navView;
+    private ListView mainTaskView;
     public static SwipeRefreshLayout swipeToRefresh;
     public static Menu navMenu;
     @Override
@@ -105,8 +107,19 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ListView mainTaskView = (ListView) findViewById(R.id.mainListView);
+        mainTaskView = (ListView) findViewById(R.id.mainListView);
         mainTaskView.setAdapter(taskViewList);
+        mainTaskView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0){
+                    TaskPopulation.populateNext();
+                }
+            }
+        });
     }
 
     private void openTaskCreator() {
