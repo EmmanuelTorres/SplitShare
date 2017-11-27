@@ -24,8 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static com.splitshare.splitshare.SplitShareApp.splitShareUser;
 import static com.splitshare.splitshare.SplitShareApp.usersGroups;
@@ -135,6 +133,17 @@ public class MainActivity extends AppCompatActivity
         tasks.clear();
         ((ArrayAdapter)taskViewList).notifyDataSetChanged();
     }
+
+
+    public static void addMoreToTaskList(PriorityQueue<Task> tasks) {
+        //mainTaskList.clear();
+        while (! tasks.isEmpty()) {
+            mainTaskList.add(tasks.poll());
+        }
+        tasks.clear();
+        ((ArrayAdapter)taskViewList).notifyDataSetChanged();
+    }
+
 
     public static void scheduleUIupdate() {
         TaskPopulation.populate();
