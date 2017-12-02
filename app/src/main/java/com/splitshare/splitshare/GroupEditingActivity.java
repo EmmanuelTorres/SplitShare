@@ -71,7 +71,8 @@ public class GroupEditingActivity extends AppCompatActivity {
         setAgendaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                TaskPopulation.filterGroup = forEditing;
+                MainActivity.scheduleUIupdate();
                 closeGroupCreator();
             }
         });

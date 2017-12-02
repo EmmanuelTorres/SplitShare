@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // ensure we don't filter anything at startup
+        TaskPopulation.filterGroup = null;
+
         navView = (NavigationView) findViewById(R.id.nav_view);
         navMenu = navView.getMenu();
         navMenu = navMenu.findItem(R.id.groupSubMenu).getSubMenu();
@@ -176,6 +179,12 @@ public class MainActivity extends AppCompatActivity
         TaskPopulation.populate();
     }
     public static void refreshAll() { splitShareUser.getGroups(); }
+
+    @Override
+    public void onBackPressed() {
+        TaskPopulation.filterGroup = null;
+        refreshAll();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
