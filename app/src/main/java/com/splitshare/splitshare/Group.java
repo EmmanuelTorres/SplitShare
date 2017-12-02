@@ -138,11 +138,15 @@ public class Group
         Log.d("Group-RemoveMember", "Removing member " + userIdToRemove + " from group " + groupName);
         groupsReference.child("GroupMembers").child(userIdToRemove).removeValue();
 
+        // Removes a group from a User's group table
+        User user = new User(userIdToRemove);
+        user.removeFromGroup(groupTimestamp);
+
         // Iterates through all local Master Tasks
         for (MasterTask masterTask: SplitShareApp.usersMasterTasks)
         {
             // If the Master Task belongs to this group
-            if (masterTask.getGroup().equals(this))
+            if (masterTask.getGroup().getGroupTimestamp().equals(groupTimestamp))
             {
                 // If that master task contains the user who we're trying to remove
                 if (masterTask.getActiveUsers().contains(userIdToRemove))
