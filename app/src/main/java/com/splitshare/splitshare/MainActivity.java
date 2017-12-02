@@ -219,6 +219,13 @@ public class MainActivity extends AppCompatActivity
         {
             openGroupCreator();
         }
+        else if (item.getTitle().equals("All groups"))
+        {
+            if (TaskPopulation.filterGroup != null) {
+                TaskPopulation.filterGroup = null;
+                scheduleUIupdate();
+            }
+        }
         else
         {
             for (Group g : usersGroups)

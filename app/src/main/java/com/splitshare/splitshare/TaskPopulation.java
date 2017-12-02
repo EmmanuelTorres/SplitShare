@@ -18,7 +18,7 @@ public class TaskPopulation
         for(MasterTask a : SplitShareApp.usersMasterTasks){
             // allows us to filter by group.
             // if a group is set, we ignore all MasterTasks with non-matching timestamps
-            if (filterGroup != null && filterGroup.getGroupTimestamp().compareTo(a.getGroup().getGroupTimestamp()) != 0)
+            if (filterGroup != null && !filterGroup.getGroupTimestamp().equals(a.getGroup().getGroupTimestamp()))
                 continue;
 
             today = Calendar.getInstance();
@@ -68,7 +68,7 @@ public class TaskPopulation
         for(MasterTask a : SplitShareApp.usersMasterTasks){
             // allows us to filter by group.
             // if a group is set, we ignore all MasterTasks with non-matching timestamps
-            if (filterGroup != null && filterGroup.getGroupTimestamp().compareTo(a.getGroup().getGroupTimestamp()) != 0)
+            if (filterGroup != null && !filterGroup.getGroupTimestamp().equals(a.getGroup().getGroupTimestamp()))
                 continue;
 
             //if last date of task < today, then skip this task
