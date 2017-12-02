@@ -54,6 +54,16 @@ public class MasterTask
         taskReference.setValue(this);
     }
 
+    public void removeFromTask(String userId)
+    {
+        if (activeUsers.contains(userId))
+        {
+            activeUsers.remove(userId);
+
+            addToDatabase();
+        }
+    }
+
     public String getTitle()
     {
         return title;
