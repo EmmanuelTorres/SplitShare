@@ -96,7 +96,7 @@ public class Cycle {
         // nthOccurrence = month (0 index)
         nthOccurrence = month;
     }
-    
+
     public boolean isOnDayWithStart(Calendar start, Calendar thisDay) {
         Calendar temp = (Calendar)start.clone();
         thisDay.set(Calendar.HOUR_OF_DAY, 0);
