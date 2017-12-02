@@ -11,10 +11,16 @@ import java.util.Calendar;
 public class TaskPopulation
 {
     public static Calendar today;
+    public static Group filterGroup;
     public static void populate()
     {
         SplitShareApp.populatedTask.clear();
         for(MasterTask a : SplitShareApp.usersMasterTasks){
+            // allows us to filter by group.
+            // if a group is set, we ignore all MasterTasks with non-matching timestamps
+            if (filterGroup != null && filterGroup.getGroupTimestamp().compareTo(a.getGroup().getGroupTimestamp()) != 0)
+                continue;
+
             today = Calendar.getInstance();
 
             today.set(Calendar.HOUR_OF_DAY, 0);
@@ -60,7 +66,10 @@ public class TaskPopulation
     {
         SplitShareApp.populatedTask.clear();
         for(MasterTask a : SplitShareApp.usersMasterTasks){
-
+            // allows us to filter by group.
+            // if a group is set, we ignore all MasterTasks with non-matching timestamps
+            if (filterGroup != null && filterGroup.getGroupTimestamp().compareTo(a.getGroup().getGroupTimestamp()) != 0)
+                continue;
 
             //if last date of task < today, then skip this task
             if(a.getEndDate().before(today) && !a.isForever()){
@@ -92,7 +101,6 @@ public class TaskPopulation
         // next refresh is 7 days later
         today.add(Calendar.DATE, 7);
         MainActivity.addMoreToTaskList(SplitShareApp.populatedTask);
-        //MainActivity.swipeToRefresh.setRefreshing(false);
     }
 
 }
