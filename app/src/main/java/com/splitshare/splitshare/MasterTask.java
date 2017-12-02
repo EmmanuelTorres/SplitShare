@@ -50,8 +50,7 @@ public class MasterTask
 
     public void addToDatabase()
     {
-        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("groups/" + group.getGroupTimestamp() + "/GroupTasks/" + title + "/");
-        taskReference.setValue(this);
+        toStoredMasterTask().addToDatabase();
     }
 
     public String getTitle()
