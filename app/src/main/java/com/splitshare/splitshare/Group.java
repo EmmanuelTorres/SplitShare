@@ -156,6 +156,7 @@ public class Group
             }
         }
     }
+
     /*
      * Returns an ArrayList of Users belonging to the Group
      */
