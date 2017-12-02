@@ -16,7 +16,6 @@ import android.widget.TextView;
 import java.util.List;
 
 public class GroupEditingActivity extends AppCompatActivity {
-    private Button finishButton;
     private Button addUserButton;
     private Button removeUserButton;
     private Button setAgendaButton;
@@ -33,14 +32,6 @@ public class GroupEditingActivity extends AppCompatActivity {
 
         TextView editingGroupX = findViewById(R.id.editing_groupx);
         editingGroupX.append(forEditing.getGroupName());
-
-        finishButton = (Button) findViewById(R.id.button_finish);
-        finishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeGroupCreator();
-            }
-        });
 
         addUserButton = (Button) findViewById(R.id.addUserButton);
         addUserButton.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +68,7 @@ public class GroupEditingActivity extends AppCompatActivity {
             }
         });
 
-        Button cancelButton = (Button) findViewById(R.id.button_cancel);
+        Button cancelButton = (Button) findViewById(R.id.button_done);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

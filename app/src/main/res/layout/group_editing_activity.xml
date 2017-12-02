@@ -6,34 +6,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <Button
-        android:id="@+id/button_cancel"
-        android:layout_width="wrap_content"
+        android:id="@+id/button_done"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Cancel"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <Button
-        android:id="@+id/button_finish"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Finish"
-        style="@style/Widget.AppCompat.Button.Colored"
+        android:text="Done"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <Button
         android:id="@+id/setAgendaButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Agenda View"
-        tools:layout_editor_absoluteX="96dp"
-        tools:layout_editor_absoluteY="461dp"
+        android:text="View group Agenda"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        style="@style/Widget.AppCompat.Button.Colored"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@id/button_done"/>
 
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -44,7 +40,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/button_cancel"
+        app:layout_constraintBottom_toTopOf="@+id/setAgendaButton"
         android:layout_marginEnd="8dp"
         android:id="@+id/constraintViewAddUser"
         app:layout_constraintVertical_bias="0.0">
@@ -56,57 +52,56 @@
             android:text="Group: "
             android:textAlignment="center"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/addUserField"
+            android:layout_margin="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
-
-        <Button
-            android:id="@+id/addUserButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Add"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editing_groupx" />
+            app:layout_constraintBottom_toTopOf="@+id/addUserButton"
+            app:layout_constraintVertical_chainStyle="packed"/>
 
         <EditText
             android:id="@+id/addUserField"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:hint="Enter user ID to add"
             android:inputType="number"
             app:layout_constraintEnd_toStartOf="@+id/addUserButton"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editing_groupx" />
+            app:layout_constraintTop_toTopOf="@+id/addUserButton"/>
 
         <Button
-            android:id="@+id/removeUserButton"
+            android:id="@+id/addUserButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Remove"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addUserButton" />
+            android:layout_marginEnd="16dp"
+            android:text="Add"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editing_groupx"
+            app:layout_constraintBottom_toTopOf="@+id/removeUserButton"/>
 
         <EditText
             android:id="@+id/removeUserField"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:hint="Enter user ID to remove"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toStartOf="@+id/removeUserButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addUserField" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/removeUserButton" />
+
+        <Button
+            android:id="@+id/removeUserButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="Remove"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addUserButton"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 
