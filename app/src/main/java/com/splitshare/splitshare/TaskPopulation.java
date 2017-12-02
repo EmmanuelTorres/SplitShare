@@ -75,8 +75,8 @@ public class TaskPopulation
         }
         // next refresh(pull down) is 7 days later
         today.add(Calendar.DATE, 7);
-        MainActivity.addAllToTaskList(SplitShareApp.populatedTask);
-        MainActivity.swipeToRefresh.setRefreshing(false);
+        MainActivity.addMoreToTaskList(SplitShareApp.populatedTask);
+//        MainActivity.swipeToRefresh.setRefreshing(false);
     }
 
     /*
@@ -149,6 +149,6 @@ public class TaskPopulation
         // next refresh(pull down) is 7 days later
         today.add(Calendar.DATE, 7);
         MainActivity.addAllToTaskList(SplitShareApp.populatedTask);
-//        MainActivity.swipeToRefresh.setRefreshing(false);
+        MainActivity.swipeToRefresh.setRefreshing(false);
     }
 }
