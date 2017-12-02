@@ -1,6 +1,5 @@
 package com.splitshare.splitshare;
 
-import java.time.Month;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +73,10 @@ public class Task implements Comparable{
         String month = String.format("%02d", date.get(Calendar.MONTH) + 1); // +1 because Calendars ammirite?
         String year = String.format("%4d", date.get(Calendar.YEAR));
         return month + "/" + day + "/" + year;
+    }
+
+    String getCost() {
+        return String.format("$%.2f", fee);
     }
 
     public int compareTo(Object o) throws ClassCastException{

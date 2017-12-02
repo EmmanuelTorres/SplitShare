@@ -17,6 +17,9 @@ import java.util.List;
 
 public class GroupEditingActivity extends AppCompatActivity {
     private Button finishButton;
+    private Button addUserButton;
+    private Button removeUserButton;
+    private Button setAgendaButton;
     public static Activity groupEditingActivityRef;
     public static Group forEditing;
     public List<User> activeUsers;
@@ -32,13 +35,42 @@ public class GroupEditingActivity extends AppCompatActivity {
         editingGroupX.append(forEditing.getGroupName());
 
         finishButton = (Button) findViewById(R.id.button_finish);
-
         finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeGroupCreator();
+            }
+        });
+
+        addUserButton = (Button) findViewById(R.id.addUserButton);
+        addUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText newUserText = findViewById(R.id.addUserField);
                 String newUserString = newUserText.getText().toString();
                 forEditing.completeAddMember(newUserString);
+
+                closeGroupCreator();
+            }
+        });
+
+        removeUserButton = (Button) findViewById(R.id.removeUserButton);
+        removeUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                EditText newUserText = findViewById(R.id.removeUserField);
+                String newUserString = newUserText.getText().toString();
+                forEditing.removeMember(newUserString);
+
+                closeGroupCreator();
+            }
+        });
+
+        setAgendaButton = (Button) findViewById(R.id.setAgendaButton);
+        setAgendaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
                 closeGroupCreator();
             }
