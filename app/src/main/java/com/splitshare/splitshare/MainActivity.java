@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -121,7 +122,13 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-
+        mainTaskView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                TaskDetailsActivity.taskForViewing = mainTaskList.get(position);
+                startActivity(new Intent(mainActRef, TaskDetailsActivity.class));
+            }
+        });
         // set text view so we can see user ID
         TextView userIDView = navigationView.getHeaderView(0).findViewById(R.id.userIDTextView);
         userIDView.setText(SplitShareApp.splitShareUser.getUserId());

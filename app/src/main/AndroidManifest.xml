@@ -53,6 +53,11 @@
             android:name=".AddUserToListActivity"
             android:label="Select applicable members">
         </activity>
+
+        <activity
+            android:name=".TaskDetailsActivity"
+            android:label="Task details">
+        </activity>
     </application>
 
 </manifest>
