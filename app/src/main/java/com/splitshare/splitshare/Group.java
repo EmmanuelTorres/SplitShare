@@ -127,16 +127,35 @@ public class Group
             public void onCancelled(DatabaseError databaseError) {}
         });
     }
-    // Removes a member from a group
+
+    // Removes a member from a group and all Master Tasks associated with this group
     public void removeMember(final String userIdToRemove)
     {
         // Creates a new object that references the Firebase database
         DatabaseReference groupsReference = SplitShareApp.firebaseDatabase.getReference("groups/" + groupTimestamp);
 
+        // Removes a member from an individual group
         Log.d("Group-RemoveMember", "Removing member " + userIdToRemove + " from group " + groupName);
         groupsReference.child("GroupMembers").child(userIdToRemove).removeValue();
-    }
 
+        // Iterates through all local Master Tasks
+        for (MasterTask masterTask: SplitShareApp.usersMasterTasks)
+        {
+            // If the Master Task belongs to this group
+            if (masterTask.getGroup().equals(this))
+            {
+                // If that master task contains the user who we're trying to remove
+                if (masterTask.getActiveUsers().contains(userIdToRemove))
+                {
+                    // Remove them
+                    masterTask.getActiveUsers().remove(userIdToRemove);
+
+                    // Add the updated task to Firebase
+                    masterTask.addToDatabase();
+                }
+            }
+        }
+    }
     /*
      * Returns an ArrayList of Users belonging to the Group
      */
