@@ -32,6 +32,16 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
         TextView displayCategory = findViewById(R.id.task_category_value);
         displayCategory.setText(taskForViewing.category);
+        LinearLayout catDet = findViewById(R.id.task_category_details);
+        if (taskForViewing.category.length() == 0)
+            catDet.setVisibility(View.GONE);
+
+        TextView displayDescription = findViewById(R.id.task_description_value);
+        displayDescription.setText(taskForViewing.description);
+        LinearLayout descDet = findViewById(R.id.task_description_details);
+        if (taskForViewing.description.length() == 0)
+            descDet.setVisibility(View.GONE);
+
 
         TextView displayDate = findViewById(R.id.task_date_value);
         displayDate.setText(taskForViewing.getDate());
@@ -41,6 +51,9 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
             TextView displayPaymentCollector = findViewById(R.id.task_collector_value);
             displayPaymentCollector.setText(taskForViewing.feeCollectionMember);
+            LinearLayout collectorDet = findViewById(R.id.task_pay_to_details);
+            if (taskForViewing.feeCollectionMember.length() == 0)
+                collectorDet.setVisibility(View.GONE);
         } else {
             LinearLayout taskRelatedInfo = findViewById(R.id.task_cost_related);
             taskRelatedInfo.setVisibility(View.GONE);

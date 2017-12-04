@@ -154,9 +154,9 @@ public class MasterTask
             c = paymentAmount;
         }
         if (!costDue)
-            return new Task(date, this.title, this.category, "", this.group);
+            return new Task(date, this.title, this.category, this.description, "", this.group);
         else
-            return new Task(date, this.title, this.category, "", this.group, true, "", c);
+            return new Task(date, this.title, this.category, this.description, "", this.group, true, "", c);
 
     }
 

@@ -16,6 +16,7 @@ public class Task implements Comparable{
     public String title;
     public String category;
     public String assignedMember;
+    public String description;
     public Group group;
     public boolean costDue;
     public String feeCollectionMember;
@@ -37,14 +38,15 @@ public class Task implements Comparable{
 
     /*
      * This constructor creates a Task object with an associated fee
-     * d = date, t = title, c = category, am = assigned member, g = group,
+     * d = date, t = title, c = category, desc = description, am = assigned member, g = group,
      * cd = costDue, fcm = fee collection member, f = fee
      */
-    Task(Calendar d, String t, String c, String am, Group g, boolean cd, String fcm, double f)
+    Task(Calendar d, String t, String c, String desc, String am, Group g, boolean cd, String fcm, double f)
     {
         date = d;
         title = t;
         category = c;
+        description = desc;
         assignedMember = am;
         group = g;
         costDue = cd;
@@ -54,14 +56,15 @@ public class Task implements Comparable{
 
     /*
      * This constructor creates a Task object WITHOUT an associated fee
-     * d = date, t = title, c = category, am = assigned member, g = group,
+     * d = date, t = title, c = category, desc = description, am = assigned member, g = group,
      * cd = costDue, fcm = fee collection member, f = fee
      */
-    Task(Calendar d, String t, String c, String am, Group g)
+    Task(Calendar d, String t, String c, String desc, String am, Group g)
     {
         date = d;
         title = t;
         category = c;
+        description = desc;
         assignedMember = am;
         group = g;
         costDue = false;
