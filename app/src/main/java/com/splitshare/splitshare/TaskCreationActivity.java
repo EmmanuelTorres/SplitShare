@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import static com.splitshare.splitshare.SplitShareApp.usersGroups;
 
@@ -48,6 +50,7 @@ public class TaskCreationActivity extends AppCompatActivity {
     private boolean endDateIsSet = false;
     private boolean isTaskReady = false;
     private boolean isTaskForever = false;
+    private boolean taskHasCost = false;
     public static List<String> activeUsers = new ArrayList<String>();
     public Cycle cycle = new Cycle();
     public static Activity taskCreationActivityRef;
@@ -57,9 +60,16 @@ public class TaskCreationActivity extends AppCompatActivity {
     // view elements relevant to Cycle specification
     private LinearLayout cycleWeekDetails;
     private LinearLayout doEveryPeriodLayout;
+    private LinearLayout paymentElements;
     private TextView textDoEveryDiscriptor;
     private Button endDateButton;
     private CheckBox repeatForeverBox;
+
+    // cost related
+    private CheckBox hasCostBox;
+    private RadioButton perPerson;
+    private RadioButton splitEvenly;
+    private EditText costValueEntry;
 
     EditText taskTitle;
     EditText doEveryTextbox;
@@ -77,6 +87,13 @@ public class TaskCreationActivity extends AppCompatActivity {
 
         taskTitle = findViewById(R.id.TitleEntry);
         doEveryTextbox = findViewById(R.id.RepeatEveryEntry);
+
+        // setup cost related UI
+        paymentElements = findViewById(R.id.paymentRelatedElements);
+        paymentElements.setVisibility(View.GONE);
+        perPerson = findViewById(R.id.radioPerPerson);
+        splitEvenly = findViewById(R.id.radioSplitEqually);
+        costValueEntry = findViewById(R.id.costEntry);
 
         // various things relevant to cycle details
         cycleWeekDetails = findViewById(R.id.daysOfWeekBoxes);
@@ -100,6 +117,20 @@ public class TaskCreationActivity extends AppCompatActivity {
                 }
             }
         });
+
+        hasCostBox = (CheckBox) findViewById(R.id.hasCostCheckbox);
+        hasCostBox.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    paymentElements.setVisibility(View.VISIBLE);
+                    taskHasCost = true;
+                } else {
+                    paymentElements.setVisibility(View.GONE);
+                    taskHasCost = false;
+                }
+            }
+        });
+
         clearDetailOptions();
 
         Button cycleTypeSetter = (Button) findViewById(R.id.setCycleButton);
@@ -126,6 +157,7 @@ public class TaskCreationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String title = taskTitle.getText().toString();
+                String category = ((EditText) findViewById(R.id.CategoryEntry)).getText().toString();
 
                 EditText descriptionDesc = findViewById(R.id.DescEntry);
                 String description = descriptionDesc.getText().toString();
@@ -170,11 +202,21 @@ public class TaskCreationActivity extends AppCompatActivity {
                     // End date is ignored with forever tasks, so set to same day.
                     endDate = startDate;
                 }
-
-                if (usersGroups.size() > 0) {
-                    Log.d("TaskCreate-newMastrTask", activeUsers.size() + activeUsers.get(0));
-                    newMasterTask = new StoredMasterTask(title, description, "Chores", startDate, endDate, group, activeUsers, false, 123, cycle, isTaskForever);
-                    newMasterTask.addToDatabase();
+                if (!taskHasCost) {
+                    if (usersGroups.size() > 0) {
+                        Log.d("TaskCreate-newMastrTask", activeUsers.size() + activeUsers.get(0));
+                        newMasterTask = new StoredMasterTask(title, description, category, startDate, endDate, group, activeUsers, false, false, 123, cycle, isTaskForever);
+                        newMasterTask.addToDatabase();
+                    }
+                }
+                else {
+                    double value = Double.parseDouble(costValueEntry.getText().toString());
+                    boolean evenSplit = splitEvenly.isChecked();
+                    if (usersGroups.size() > 0) {
+                        Log.d("TaskCreate-newMastrTask", activeUsers.size() + activeUsers.get(0));
+                        newMasterTask = new StoredMasterTask(title, description, category, startDate, endDate, group, activeUsers, true, evenSplit, value, cycle, isTaskForever);
+                        newMasterTask.addToDatabase();
+                    }
                 }
 
                 closeTaskCreator();
@@ -260,6 +302,17 @@ public class TaskCreationActivity extends AppCompatActivity {
         else if (Integer.parseInt(doEveryTextbox.getText().toString()) == 0) {
             Toast.makeText(this, "Can't do every 0 times!", Toast.LENGTH_LONG).show();
             return false;
+        }
+        else if (taskHasCost) {
+            String t = costValueEntry.getText().toString();
+            if (t.length() == 0 || Double.parseDouble(t) == 0.0) {
+                Toast.makeText(this, "Please enter a non-zero payment", Toast.LENGTH_LONG).show();
+                return false;
+            }
+            if (!perPerson.isChecked() && !splitEvenly.isChecked()) {
+                Toast.makeText(this, "Please select a cost splitting method", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
         return true;
     }

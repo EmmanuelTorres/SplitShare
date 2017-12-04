@@ -14,6 +14,9 @@ public class TaskPopulation
     public static Group filterGroup;
     public static void populate()
     {
+        // for correctness, if there's no MasterTasks
+        today = Calendar.getInstance();
+
         SplitShareApp.populatedTask.clear();
         for(MasterTask a : SplitShareApp.usersMasterTasks){
             // allows us to filter by group.

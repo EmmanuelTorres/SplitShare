@@ -23,6 +23,7 @@ public class MasterTask
     // and paymentAmount is the sum total
     private double paymentAmount;
     public boolean costDue;
+    private boolean evenCostSplit;
     private Cycle cycle;
     private boolean isForever;
 
@@ -32,8 +33,8 @@ public class MasterTask
     }
 
     public MasterTask(String title, String description, String category, Calendar startDate,
-                      Calendar endDate, Group group, List<String> activeUsers, boolean costDue, double paymentAmount,
-                      Cycle cycle, boolean forever)
+                      Calendar endDate, Group group, List<String> activeUsers, boolean costDue,
+                      boolean evenSplit, double paymentAmount, Cycle cycle, boolean forever)
     {
         this.title = title;
         this.description = description;
@@ -44,6 +45,7 @@ public class MasterTask
         this.activeUsers = new ArrayList<String>(activeUsers);
         this.costDue = costDue;
         this.paymentAmount = paymentAmount;
+        this.evenCostSplit = evenSplit;
         this.cycle = cycle;
         this.isForever = forever;
     }
@@ -145,7 +147,17 @@ public class MasterTask
 
     //this is for task population and convience
     public Task createDumbTask(Calendar date){
-        return new Task(date, this.title, this.category, "", this.group);
+        double c;
+        if (evenCostSplit) {
+            c = paymentAmount/activeUsers.size();
+        } else {
+            c = paymentAmount;
+        }
+        if (!costDue)
+            return new Task(date, this.title, this.category, "", this.group);
+        else
+            return new Task(date, this.title, this.category, "", this.group, true, "", c);
+
     }
 
     public boolean isForever() {
@@ -182,6 +194,14 @@ public class MasterTask
         SimpleDate sd = new SimpleDate(this.startDate.get(Calendar.MONTH), this.startDate.get(Calendar.DAY_OF_MONTH), this.startDate.get(Calendar.YEAR));
         SimpleDate ed = new SimpleDate(this.endDate.get(Calendar.MONTH), this.endDate.get(Calendar.DAY_OF_MONTH), this.endDate.get(Calendar.YEAR));
         return new StoredMasterTask(title, description, category, sd,
-                ed, group, activeUsers, costDue, paymentAmount, cycle, isForever);
+                ed, group, activeUsers, costDue, evenCostSplit, paymentAmount, cycle, isForever);
+    }
+
+    public boolean isEvenCostSplit() {
+        return evenCostSplit;
+    }
+
+    public void setEvenCostSplit(boolean evenCostSplit) {
+        this.evenCostSplit = evenCostSplit;
     }
 }

@@ -31,7 +31,7 @@ class TaskAdapter extends ArrayAdapter<Task> {
         eventTitleText.setText(singleTask.title);
         eventDateText.setText(singleTask.getDate());
         eventGroupText.setText(singleTask.group.getGroupName());
-        String c = "$" + singleTask.fee;
+        String c = String.format("$%.2f", singleTask.fee);
         eventCostText.setText(c);
         if (!singleTask.costDue) {
             eventCostText.setVisibility(View.GONE);

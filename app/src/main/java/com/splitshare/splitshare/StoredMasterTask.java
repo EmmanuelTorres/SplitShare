@@ -22,6 +22,7 @@ public class StoredMasterTask {
     // and paymentAmount is the sum total
     public double paymentAmount;
     public boolean costDue;
+    public boolean evenCostSplit;
     public Cycle cycle;
     public boolean isForever;
 
@@ -30,8 +31,8 @@ public class StoredMasterTask {
     }
 
     public StoredMasterTask(String title, String description, String category, SimpleDate startDate,
-                            SimpleDate endDate, Group group, List<String> activeUsers, boolean costDue, double paymentAmount,
-                            Cycle cycle, boolean forever)
+                            SimpleDate endDate, Group group, List<String> activeUsers, boolean costDue,
+                            boolean evenSplit, double paymentAmount, Cycle cycle, boolean forever)
     {
         this.title = title;
         this.description = description;
@@ -41,6 +42,7 @@ public class StoredMasterTask {
         this.group = group;
         this.activeUsers = new ArrayList<String>(activeUsers);
         this.costDue = costDue;
+        this.evenCostSplit = evenSplit;
         this.paymentAmount = paymentAmount;
         this.cycle = cycle;
         this.isForever = forever;
@@ -64,6 +66,6 @@ public class StoredMasterTask {
         ed.set(Calendar.YEAR, endDate.year);
 
         return new MasterTask(title, description, category, sd,
-                ed, group, activeUsers, costDue, paymentAmount, cycle, isForever);
+                ed, group, activeUsers, costDue, evenCostSplit, paymentAmount, cycle, isForever);
     }
 }
