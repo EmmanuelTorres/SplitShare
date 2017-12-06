@@ -7,15 +7,12 @@ package com.splitshare.splitshare;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -30,49 +27,54 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 import static com.splitshare.splitshare.SplitShareApp.usersGroups;
 
 public class TaskCreationActivity extends AppCompatActivity {
+    // Specified start/end dates
     public static SimpleDate startDate;
     public static SimpleDate endDate;
+    // cycle type information
     public static int cycleType = 0;
+    public Cycle cycle = new Cycle();
+    // number of users involved in task
     public static int numUsers = 0;
+    public static List<String> activeUsers = new ArrayList<String>();
+    // constants for activity result requests
     static final int SET_START_DATE_REQ = 1;
     static final int SET_END_DATE_REQ = 2;
     static final int SET_CYCLE_TYPE_REQ = 3;
     static final int SET_MEMBERS_REQ = 4;
+    // booleans that help determine whether a task is ready
     private boolean startDateIsSet = false;
     private boolean endDateIsSet = false;
-    private boolean isTaskReady = false;
     private boolean isTaskForever = false;
     private boolean taskHasCost = false;
-    public static List<String> activeUsers = new ArrayList<String>();
-    public Cycle cycle = new Cycle();
+    // external references to this activity and the resulting StoredMasterTask
     public static Activity taskCreationActivityRef;
     public static StoredMasterTask newMasterTask;
 
+    // button for selecting members
+    Button selectUsersButton;
 
-    // view elements relevant to Cycle specification
+    // UI elements relevant to Cycle specification
     private LinearLayout cycleWeekDetails;
     private LinearLayout doEveryPeriodLayout;
-    private LinearLayout paymentElements;
     private TextView textDoEveryDiscriptor;
     private Button endDateButton;
     private CheckBox repeatForeverBox;
+    EditText doEveryTextbox;
 
-    // cost related
+    // cost related UI
+    private LinearLayout paymentElements;
     private CheckBox hasCostBox;
     private RadioButton perPerson;
     private RadioButton splitEvenly;
     private EditText costValueEntry;
 
+    // task title textbox
     EditText taskTitle;
-    EditText doEveryTextbox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +87,9 @@ public class TaskCreationActivity extends AppCompatActivity {
         ArrayAdapter<Group> groupListAdapter = new ArrayAdapter<Group>(this, android.R.layout.simple_spinner_dropdown_item, usersGroups);
         groupSpinner.setAdapter(groupListAdapter);
 
+        // initialize reference to task title text entry box
         taskTitle = findViewById(R.id.TitleEntry);
+        // initialize reference to [] in "do every x [days, weeks, etc]"
         doEveryTextbox = findViewById(R.id.RepeatEveryEntry);
 
         // setup cost related UI
@@ -95,16 +99,23 @@ public class TaskCreationActivity extends AppCompatActivity {
         splitEvenly = findViewById(R.id.radioSplitEqually);
         costValueEntry = findViewById(R.id.costEntry);
 
-        // various things relevant to cycle details
+        // various UI relevant to cycle details
         cycleWeekDetails = findViewById(R.id.daysOfWeekBoxes);
         doEveryPeriodLayout = findViewById(R.id.doEveryPeriod);
         textDoEveryDiscriptor = findViewById(R.id.textDoEveryDiscriptor);
         endDateButton = (Button) findViewById(R.id.endDateSetButton);
+        // date selection buttons
+        Button beginDateButton = (Button) findViewById(R.id.startDateSetButton);
+        beginDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { openDateSelector(SET_START_DATE_REQ); }
+        });
         endDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { openDateSelector(SET_END_DATE_REQ); }
         });
 
+        // setup checkbox that toggles repeating task indefinately
         repeatForeverBox = (CheckBox) findViewById(R.id.repeatForeverCheckbox);
         repeatForeverBox.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -118,6 +129,7 @@ public class TaskCreationActivity extends AppCompatActivity {
             }
         });
 
+        // setup checkbox that toggles whether or not there's an associated cost
         hasCostBox = (CheckBox) findViewById(R.id.hasCostCheckbox);
         hasCostBox.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -131,8 +143,10 @@ public class TaskCreationActivity extends AppCompatActivity {
             }
         });
 
+        // ensure cycle UI is set up so appropriate UI elements are hidden/visible.
         clearDetailOptions();
 
+        // declare button that lets user select cycle type
         Button cycleTypeSetter = (Button) findViewById(R.id.setCycleButton);
         cycleTypeSetter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +155,8 @@ public class TaskCreationActivity extends AppCompatActivity {
             }
         });
 
-        Button selectUsersButton = (Button) findViewById(R.id.selectApplicableMembers);
+        // declare button that lets user select applicable members
+        selectUsersButton = (Button) findViewById(R.id.selectApplicableMembers);
         selectUsersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,23 +166,29 @@ public class TaskCreationActivity extends AppCompatActivity {
             }
         });
 
+        // declare button that lets us finish task creation
         Button finishButton = (Button) findViewById(R.id.button_finish);
-
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // fetch task title
                 String title = taskTitle.getText().toString();
+                // fetch task cateogry
                 String category = ((EditText) findViewById(R.id.CategoryEntry)).getText().toString();
-
+                // fetch task description
                 EditText descriptionDesc = findViewById(R.id.DescEntry);
                 String description = descriptionDesc.getText().toString();
 
+                // ensure task is ready and fully populated
                 if (!checkStatus()) {
                     return;
                 }
 
+                // fetch applicable group
                 int pos = ((Spinner)findViewById(R.id.spinner)).getSelectedItemPosition();
                 Group group = usersGroups.get(pos);
+
+                // fetch cycle information from UI and turn it into a Cycle object
                 if (cycleType  == 0) {
                     cycle = new Cycle();
                 } else if (cycleType == 1) {
@@ -198,10 +219,12 @@ public class TaskCreationActivity extends AppCompatActivity {
                 } else if (cycleType == 4) {
                     cycle = new Cycle(startDate.month, startDate.year, true);
                 }
+                // if task is forever, set end date to be start date.
                 if (cycleType == 0 || isTaskForever) {
                     // End date is ignored with forever tasks, so set to same day.
                     endDate = startDate;
                 }
+                // create task that doesn't have an associated cost
                 if (!taskHasCost) {
                     if (usersGroups.size() > 0) {
                         Log.d("TaskCreate-newMastrTask", activeUsers.size() + activeUsers.get(0));
@@ -209,6 +232,7 @@ public class TaskCreationActivity extends AppCompatActivity {
                         newMasterTask.addToDatabase();
                     }
                 }
+                // create task that has an associated cost
                 else {
                     double value = Double.parseDouble(costValueEntry.getText().toString());
                     boolean evenSplit = splitEvenly.isChecked();
@@ -219,23 +243,18 @@ public class TaskCreationActivity extends AppCompatActivity {
                     }
                 }
 
+                // exit task creation
                 closeTaskCreator();
             }
         });
 
+        // declare button that cancels task creation
         Button cancelButton = (Button) findViewById(R.id.button_cancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 closeTaskCreator();
             }
-        });
-
-
-        Button beginDateButton = (Button) findViewById(R.id.startDateSetButton);
-        beginDateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { openDateSelector(SET_START_DATE_REQ); }
         });
     }
 
@@ -248,6 +267,7 @@ public class TaskCreationActivity extends AppCompatActivity {
         MainActivity.refreshAll();
         finish();
     }
+    // opens a new activity that allows date selection
     private void openDateSelector(int request) { startActivityForResult(new Intent(this, DateSelectionActivity.class), request); }
 
     @Override
@@ -275,9 +295,6 @@ public class TaskCreationActivity extends AppCompatActivity {
                 activeUsers.clear();
                 for (User u : AddUserToListActivity.usersSelected)
                     activeUsers.add(u.getUserId());
-            }
-            if (startDateIsSet && endDateIsSet) {
-                isTaskReady = true;
             }
         }
     }
@@ -318,6 +335,8 @@ public class TaskCreationActivity extends AppCompatActivity {
     }
 
     void openUserSelectionWithGroup(Group g) {
+        selectUsersButton.setFocusable(false);
+        selectUsersButton.setClickable(false);
         // Creates a new object that references the Firebase database
         DatabaseReference groupsReference = SplitShareApp.firebaseDatabase.getReference("groups/" + g.getGroupTimestamp());
 
@@ -345,6 +364,8 @@ public class TaskCreationActivity extends AppCompatActivity {
                         AddUserToListActivity.usersAvail.add(new User(groupMember.getKey(), (String) groupMember.getValue()));
                     }
                     startActivityForResult(new Intent(taskCreationActivityRef, AddUserToListActivity.class), SET_MEMBERS_REQ);
+                    selectUsersButton.setFocusable(true);
+                    selectUsersButton.setClickable(true);
                 }
             }
 
@@ -353,6 +374,7 @@ public class TaskCreationActivity extends AppCompatActivity {
         });
     }
 
+    // this function ensures that the UI for cycle configuration is properly initialized
     void clearDetailOptions() {
         cycleWeekDetails.setVisibility(View.GONE);
         repeatForeverBox.setVisibility(View.GONE);
@@ -364,6 +386,7 @@ public class TaskCreationActivity extends AppCompatActivity {
         }
 
     }
+    // updates UI for a particular cycle type
     void updateUIforType(int t) {
         clearDetailOptions();
         if (t == 0) {

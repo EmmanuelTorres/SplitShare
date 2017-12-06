@@ -59,14 +59,16 @@ public class FirebaseLoginActivity extends AppCompatActivity implements View.OnC
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        if (SplitShareApp.mAuth.getCurrentUser()!=null)
-        {
-            signIn();
-        }
-
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
+
+        if (SplitShareApp.mAuth.getCurrentUser()!=null)
+        {
+            signInButton.setVisibility(View.GONE);
+            signIn();
+        }
+
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
     }

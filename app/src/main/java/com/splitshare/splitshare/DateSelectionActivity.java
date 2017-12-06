@@ -29,9 +29,6 @@ public class DateSelectionActivity extends AppCompatActivity {
 
         dPick = (DatePicker) findViewById(R.id.datePicker);
 
-        //TaskCreationActivity.startDate  = ;
-
-
         Button doneSelectingDate = (Button) findViewById(R.id.date_button_done);
         doneSelectingDate.setOnClickListener(new View.OnClickListener() {
             @Override
