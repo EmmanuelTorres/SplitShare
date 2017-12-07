@@ -58,6 +58,10 @@
             android:name=".TaskDetailsActivity"
             android:label="Task details">
         </activity>
+        <activity
+            android:name=".TaskRemovalActivity"
+            android:label="Remove tasks">
+        </activity>
     </application>
 
 </manifest>

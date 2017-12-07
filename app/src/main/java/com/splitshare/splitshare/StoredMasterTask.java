@@ -54,6 +54,12 @@ public class StoredMasterTask {
         taskReference.setValue(this);
     }
 
+    public void removeFromDatabase()
+    {
+        DatabaseReference taskReference = SplitShareApp.firebaseDatabase.getReference("groups/" + group.getGroupTimestamp() + "/GroupTasks/" + title + "/");
+        taskReference.removeValue();
+    }
+
     public MasterTask toMasterTask() {
         Calendar sd = Calendar.getInstance();
         sd.set(Calendar.DAY_OF_MONTH, startDate.day);

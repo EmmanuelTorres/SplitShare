@@ -24,8 +24,6 @@ import android.widget.Toast;
 
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -72,7 +70,6 @@ public class MainActivity extends AppCompatActivity
         SplitShareApp.firebaseDatabase = FirebaseDatabase.getInstance();
         if (SplitShareApp.splitShareUser == null) {
             SplitShareApp.splitShareUser = new SplitShareUser();
-            splitShareUser.createAccount();
         }
 
         // used so things can externally update the agenda

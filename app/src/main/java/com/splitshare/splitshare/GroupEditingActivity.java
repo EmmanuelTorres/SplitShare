@@ -19,6 +19,7 @@ public class GroupEditingActivity extends AppCompatActivity {
     private Button addUserButton;
     private Button removeUserButton;
     private Button setAgendaButton;
+    private Button removeTaskButton;
     public static Activity groupEditingActivityRef;
     public static Group forEditing;
     public List<User> activeUsers;
@@ -65,6 +66,22 @@ public class GroupEditingActivity extends AppCompatActivity {
                 TaskPopulation.filterGroup = forEditing;
                 MainActivity.scheduleUIupdate();
                 closeGroupCreator();
+            }
+        });
+
+        removeTaskButton = (Button) findViewById(R.id.removeTasksButton);
+        removeTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TaskRemovalActivity.tasksAvail.clear();
+                for(MasterTask i : SplitShareApp.usersMasterTasks){
+                    if(i.getGroup().getGroupTimestamp().equals(forEditing.getGroupTimestamp())){
+                        TaskRemovalActivity.tasksAvail.add(i);
+
+                    }
+
+                }
+               startActivity(new Intent(groupEditingActivityRef, TaskRemovalActivity.class));
             }
         });
 

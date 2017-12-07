@@ -29,7 +29,19 @@
         style="@style/Widget.AppCompat.Button.Colored"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/button_done"/>
+        app:layout_constraintBottom_toTopOf="@+id/removeTasksButton"/>
+
+    <Button
+        android:id="@+id/removeTasksButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Remove tasks..."
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/button_done"/>
 
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

@@ -1,7 +1,5 @@
 package com.splitshare.splitshare;
 
-import com.google.firebase.database.DatabaseReference;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -54,6 +52,8 @@ public class MasterTask
     {
         toStoredMasterTask().addToDatabase();
     }
+
+    public void removeFromDatabase() { toStoredMasterTask().removeFromDatabase();}
 
     public String getTitle()
     {
