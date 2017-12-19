@@ -2,6 +2,7 @@ package com.splitshare.splitshare;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -197,8 +198,11 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        String privacyURL = "https://github.com/dklug/SplitShare";
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(privacyURL));
+                    startActivity(browserIntent);
             return true;
         }
 
